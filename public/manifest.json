@@ -1,8 +1,8 @@
 {
-    "id": "/",
-  "name": "KSU CUCEK Helpdesk",
-  "short_name": "KSU CUCEK",
-  "description": "A helpdesk and information portal for KSU CUCEK students.",
+  "id": "/",
+  "name": "CUCEK UP-TO-DATE",
+  "short_name": "CUCEK UP-TO-DATE",
+  "description": "A helpdesk and information portal for CUCEK students.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#1f2121",
