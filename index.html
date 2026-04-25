@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="/icon/logo.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KSU CUCEK</title>
+  <link rel="manifest" href="/manifest.json">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+</head>
+
+<body data-color-scheme="light">
+
+  <div id="preloader">
+    <img src="/icon/preloader1.png" alt="preloader-logo">
+  </div>
+
+  <!-- Scroll Progress injected via React or CSS via index.html -->
+  <div class="scroll-progress" id="scrollProgress"></div>
+
+  <div id="root"></div>
+
+  <script type="module" src="/src/main.jsx"></script>
+
+  <!-- Preloader Logic -->
+  <script>
+    window.addEventListener("load", function () {
+      const preloader = document.getElementById("preloader");
+      setTimeout(() => {
+        if (preloader) {
+          preloader.style.opacity = "0";
+          setTimeout(() => {
+            preloader.style.display = "none";
+          }, 500);
+        }
+      }, 300); // Small delay to let React mount safely
+    });
+  </script>
+</body>
+
+</html>
