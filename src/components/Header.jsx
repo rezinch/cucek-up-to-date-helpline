@@ -13,8 +13,8 @@ function Header({ activeTab, setActiveTab, isDarkMode, toggleTheme, onMobileMenu
     return (
         <header className="header" id="header">
             <div className="header-container">
-                <h1 className="logo" id="logo">KSU CUCEK</h1>
-                
+                <h1 className="logo" id="logo">CUCEK UP-TO-DATE</h1>
+
                 <nav className="desktop-tab-nav">
                     {tabs.map((tab) => (
                         <button
@@ -37,9 +37,9 @@ function Header({ activeTab, setActiveTab, isDarkMode, toggleTheme, onMobileMenu
                     >
                         {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
                     </button>
-                    <button 
-                        className="mobile-menu-toggle" 
-                        onClick={onMobileMenuToggle} 
+                    <button
+                        className="mobile-menu-toggle"
+                        onClick={onMobileMenuToggle}
                         style={{ display: 'none', background: 'transparent', border: 'none', color: 'var(--color-text-primary)' }}
                     >
                         <Menu size={24} />

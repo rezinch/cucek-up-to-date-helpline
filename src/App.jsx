@@ -87,7 +87,7 @@ function App() {
         </div>
       </div>
 
-      <main id="mainContent" style={{ minHeight: 'calc(100vh - 150px)' }}>
+      <main id="mainContent">
         {activeTab === 'dashboard' && <BentoGrid setActiveTab={handleTabChange} />}
         {activeTab === 'helpdesk' && <div className="container py-16"><Helpdesk /></div>}
         {activeTab === 'bus' && <div className="container py-16"><BusTimings /></div>}
