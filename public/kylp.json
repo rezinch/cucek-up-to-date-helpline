@@ -37,13 +37,13 @@
   },
   {
     "from_station": "kayalpuram",
-    "from_time": "12:30 AM",
+    "from_time": "12:30 PM",
     "to_station": "changanassery",
     "to_time": "1:10 PM"
   },
   {
     "from_station": "kayalpuram",
-    "from_time": "2:30 AM",
+    "from_time": "2:30 PM",
     "to_station": "changanassery",
     "to_time": "2:00 PM"
   },

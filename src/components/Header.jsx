@@ -7,7 +7,8 @@ function Header({ activeTab, setActiveTab, isDarkMode, toggleTheme, onMobileMenu
         { id: 'bus', label: 'Bus Timings' },
         { id: 'syllabus', label: 'Syllabus' },
         { id: 'notes', label: 'Notes' },
-        { id: 'helpdesk', label: 'Helpdesk' }
+        { id: 'helpdesk', label: 'Helpdesk' },
+        { id: 'contact', label: 'Contact Us' }
     ];
 
     return (

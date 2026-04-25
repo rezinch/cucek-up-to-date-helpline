@@ -321,12 +321,16 @@ a {
   grid-column: span 2;
 }
 
+.col-span-4 {
+  grid-column: span 4;
+}
+
 .row-span-2 {
   grid-row: span 2;
 }
 
 @media (max-width: 768px) {
-  .col-span-2 {
+  .col-span-2, .col-span-4 {
     grid-column: span 1;
   }
 
