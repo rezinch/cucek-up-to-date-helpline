@@ -51,7 +51,7 @@ function ContactUs() {
         <section id="contact" className="tab-content section-animate" role="tabpanel">
             <div className="section-header">
                 <h2>Contact Us</h2>
-                <p className="section-description">Get in touch with us</p>
+                <p className="section-description">Contact us for any greivances or suggestions</p>
             </div>
 
             <div className="contact-container" style={{ display: 'flex', flexDirection: 'column', gap: '2rem', marginTop: '2rem', maxWidth: '600px', margin: '2rem auto' }}>
@@ -81,8 +81,8 @@ function ContactUs() {
                         </div>
 
                         <div className="form-group" style={{ marginBottom: '1rem' }}>
-                            <label className="form-label" htmlFor="phone" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Contact Number (Optional)</label>
-                            <input type="tel" id="phone" name="phone" className="form-control" placeholder="+91 9876543210" style={{ width: '100%' }} />
+                            <label className="form-label" htmlFor="phone" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Contact Number</label>
+                            <input type="tel" id="phone" name="phone" className="form-control" required placeholder="+91 9876543210" style={{ width: '100%' }} />
                         </div>
 
                         <div className="form-group" style={{ marginBottom: '1.5rem' }}>
