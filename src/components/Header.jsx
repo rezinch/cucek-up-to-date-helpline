@@ -1,10 +1,8 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Moon, Sun, Menu, Download } from 'lucide-react';
-import { usePWAInstall } from '../hooks/usePWAInstall';
+import { Moon, Sun, Menu } from 'lucide-react';
 
 function Header({ activeTab, setActiveTab, isDarkMode, toggleTheme, onMobileMenuToggle }) {
-    const { isInstallable, install } = usePWAInstall();
     const tabs = [
         { id: 'dashboard', label: 'Dashboard' },
         { id: 'bus', label: 'Bus Timings' },
@@ -36,16 +34,6 @@ function Header({ activeTab, setActiveTab, isDarkMode, toggleTheme, onMobileMenu
                 </nav>
 
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    {isInstallable && (
-                        <button
-                            className="theme-switch"
-                            onClick={install}
-                            aria-label="Install App"
-                            title="Install App"
-                        >
-                            <Download size={20} />
-                        </button>
-                    )}
                     <button
                         className="theme-switch"
                         onClick={toggleTheme}
