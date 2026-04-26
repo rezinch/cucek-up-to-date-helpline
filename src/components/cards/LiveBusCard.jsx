@@ -79,15 +79,15 @@ export default function LiveBusCard({ setActiveTab }) {
         const currentMinutes = currentTime.getHours() * 60 + currentTime.getMinutes();
 
         const fromSchedule = fromData.map((d) => ({
-            station: d.from_station, 
-            time: d.from_time, 
-            dest: toName 
+            station: d.from_station,
+            time: d.from_time,
+            dest: toName
         })).filter(x => x.time);
 
         const toSchedule = toData.map((d) => ({
-            station: d.to_station, 
-            time: d.to_time, 
-            dest: fromName 
+            station: d.to_station,
+            time: d.to_time,
+            dest: fromName
         })).filter(x => x.time);
 
         const nextFrom = getNextBus(fromSchedule, currentMinutes);
@@ -114,7 +114,7 @@ export default function LiveBusCard({ setActiveTab }) {
     };
 
     return (
-        <motion.div 
+        <motion.div
             className="bento-card col-span-2 row-span-2"
             variants={{
                 hidden: { opacity: 0, y: 20 },
@@ -130,7 +130,7 @@ export default function LiveBusCard({ setActiveTab }) {
                     <Clock size={14} /> Live
                 </div>
             </div>
-            
+
             {loading ? (
                 <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     Loading schedules...
@@ -145,16 +145,16 @@ export default function LiveBusCard({ setActiveTab }) {
                         <div style={{ fontWeight: 600 }}>Kayalpuram ↔ Changanassery</div>
                         {renderBus(kylpTimes, kylpTimes, 'Kayalpuram', 'Changanassery')}
                     </div>
-                    
-                    <button 
-                         className="btn btn-primary" 
-                         style={{ marginTop: 'auto', width: '100%', background: 'var(--color-slate-700)', color: 'var(--color-text-primary)' }}
-                         onClick={(e) => {
-                             e.stopPropagation();
-                             setActiveTab('bus');
-                         }}
-                         onMouseEnter={(e) => e.target.style.background = 'var(--color-slate-600)'}
-                         onMouseLeave={(e) => e.target.style.background = 'var(--color-slate-700)'}
+
+                    <button
+                        className="btn btn-primary"
+                        style={{ marginTop: 'auto', width: '100%', background: 'var(--color-slate-700)', color: 'var(--color-text-primary)' }}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setActiveTab('bus');
+                        }}
+                        onMouseEnter={(e) => e.target.style.background = 'var(--color-slate-600)'}
+                        onMouseLeave={(e) => e.target.style.background = 'var(--color-slate-700)'}
                     >
                         View All Timings
                     </button>

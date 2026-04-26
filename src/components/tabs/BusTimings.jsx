@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { Smartphone } from 'lucide-react';
+import { usePWAInstall } from '../../hooks/usePWAInstall';
 
 function BusTimings() {
+    const { isInstallable, install } = usePWAInstall();
     const [alpTimes, setAlpTimes] = useState([]);
     const [kylpTimes, setKylpTimes] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -87,6 +90,8 @@ function BusTimings() {
                     </div>
                 </div>
             </div>
+
+
         </section>
     );
 }
