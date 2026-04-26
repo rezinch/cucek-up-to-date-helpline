@@ -7,6 +7,21 @@ export default function BentoGrid({ setActiveTab }) {
         <div className="container" style={{ paddingTop: '2rem' }}>
             <div className="bento-grid">
                 <LiveBusCard setActiveTab={setActiveTab} />
+
+
+                {/* Notes Card replacing Hostels */}
+                <div
+                    className="bento-card"
+                    style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', textAlign: 'center' }}
+                    onClick={() => setActiveTab('notes')}
+                >
+                    <div style={{ background: 'rgba(245, 158, 11, 0.15)', color: '#F59E0B', padding: '1rem', borderRadius: '50%', marginBottom: '1rem' }}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+                    </div>
+                    <h3 className="card-title" style={{ fontSize: '1.25rem' }}>Prev Papers & Notes</h3>
+                    <p className="card-desc" style={{ marginTop: '0.5rem' }}>Access notes & assignments</p>
+                </div>
+
                 <SyllabusCard />
 
                 {/* Helpdesk / Contact Card */}
@@ -22,18 +37,7 @@ export default function BentoGrid({ setActiveTab }) {
                     <p className="card-desc" style={{ marginTop: '0.5rem' }}>View student coordinators</p>
                 </div>
 
-                {/* Notes Card replacing Hostels */}
-                <div 
-                    className="bento-card"
-                    style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', textAlign: 'center' }}
-                    onClick={() => setActiveTab('notes')}
-                >
-                    <div style={{ background: 'rgba(245, 158, 11, 0.15)', color: '#F59E0B', padding: '1rem', borderRadius: '50%', marginBottom: '1rem' }}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
-                    </div>
-                    <h3 className="card-title" style={{ fontSize: '1.25rem' }}>Prev Papers</h3>
-                    <p className="card-desc" style={{ marginTop: '0.5rem' }}>Access notes & assignments</p>
-                </div>
+
 
                 {/* Additional Links Card */}
                 <div

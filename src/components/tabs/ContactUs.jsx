@@ -111,16 +111,16 @@ function ContactUs() {
                     <h4 style={{ marginBottom: '1rem', fontSize: '1.2rem', color: 'var(--primary-color)' }}>For Urgent Issues Contact</h4>
                     <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '1.5rem', fontSize: '1.1rem' }}>
                         <div style={{ display: 'flex', flexDirection: 'column' }}>
-                            <span style={{ fontWeight: '600' }}>Rezin</span>
-                            <a href="tel:8086982257" style={{ color: 'var(--text-color)', textDecoration: 'none' }}>8086982257</a>
+                            <span style={{ fontWeight: '600' }}>Sahil</span>
+                            <a href="tel:+917907176934" style={{ color: 'var(--text-color)', textDecoration: 'none' }}>7907176934</a>
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column' }}>
-                            <span style={{ fontWeight: '600' }}>Rezin</span>
-                            <a href="tel:8086982257" style={{ color: 'var(--text-color)', textDecoration: 'none' }}>8086982257</a>
+                            <span style={{ fontWeight: '600' }}>Anand</span>
+                            <a href="tel:+919061564501" style={{ color: 'var(--text-color)', textDecoration: 'none' }}>9061564501</a>
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column' }}>
-                            <span style={{ fontWeight: '600' }}>Rezin</span>
-                            <a href="tel:8086982257" style={{ color: 'var(--text-color)', textDecoration: 'none' }}>8086982257</a>
+                            <span style={{ fontWeight: '600' }}>Jasil</span>
+                            <a href="tel:+919496076603" style={{ color: 'var(--text-color)', textDecoration: 'none' }}>9496076603</a>
                         </div>
                     </div>
                 </div>

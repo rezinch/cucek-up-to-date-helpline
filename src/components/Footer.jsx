@@ -4,7 +4,7 @@ function Footer() {
     return (
         <footer className="footer" id="footer">
             <div className="container flex justify-center">
-                <p>By KSU CUCEK 💙</p>
+                <p>Powered by KSU CUCEK </p>
             </div>
         </footer>
     );

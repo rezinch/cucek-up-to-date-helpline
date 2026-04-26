@@ -7,9 +7,10 @@ function Header({ activeTab, setActiveTab, isDarkMode, toggleTheme, onMobileMenu
     const { isInstallable, install } = usePWAInstall();
     const tabs = [
         { id: 'dashboard', label: 'Dashboard' },
+        { id: 'notes', label: 'Notes & Prev Qns' },
         { id: 'bus', label: 'Bus Timings' },
         { id: 'syllabus', label: 'Syllabus' },
-        { id: 'notes', label: 'Notes' },
+
         { id: 'helpdesk', label: 'Helpdesk' },
         { id: 'contact', label: 'Contact Us' }
     ];

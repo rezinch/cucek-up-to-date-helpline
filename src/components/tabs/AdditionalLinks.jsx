@@ -2,19 +2,19 @@ import React from 'react';
 
 const linksData = [
     {
-        href: "https://cucek.cusat.ac.in/?page=3",
+        href: "https://cucek.cusat.ac.in/faculty.php",
         iconEmoji: "👨‍🏫",
         title: "Faculty Directory",
         desc: "Contact faculty members"
     },
     {
-        href: "https://admissions.cusat.ac.in/Files/FEE%20STRUCTURE%202024-FINAL1.pdf",
+        href: "https://admissions.cusat.ac.in/Prospectus/Fee_Structure2026.pdf",
         iconEmoji: "💰",
         title: "Fee Structure",
         desc: "View current fee details"
     },
     {
-        href: "/items/fee.pdf",
+        href: "https://www.cusat.ac.in/student/regulations",
         iconEmoji: "📋",
         title: "Academic Regulations",
         desc: "Academic rules and guidelines"
