@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { Smartphone } from 'lucide-react';
+import { usePWAInstall } from '../../hooks/usePWAInstall';
 
 function BusTimings() {
+    const { isInstallable, install } = usePWAInstall();
     const [alpTimes, setAlpTimes] = useState([]);
     const [kylpTimes, setKylpTimes] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -87,6 +90,28 @@ function BusTimings() {
                     </div>
                 </div>
             </div>
+
+            {isInstallable && (
+                <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2.5rem', marginBottom: '1rem' }}>
+                    <button 
+                        onClick={install}
+                        className="btn btn-primary scale-animate" 
+                        style={{ 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            gap: '0.75rem', 
+                            padding: '1rem 2rem', 
+                            borderRadius: 'var(--radius-lg)', 
+                            fontWeight: '600', 
+                            fontSize: '1.1rem', 
+                            boxShadow: 'var(--glass-shadow)' 
+                        }}
+                    >
+                        <Smartphone size={24} />
+                        Add as Widget to Home Screen
+                    </button>
+                </div>
+            )}
         </section>
     );
 }
