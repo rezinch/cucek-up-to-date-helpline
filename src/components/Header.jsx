@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 import { Moon, Sun, Menu } from 'lucide-react';
 
 function Header({ activeTab, setActiveTab, isDarkMode, toggleTheme, onMobileMenuToggle }) {
@@ -18,15 +19,17 @@ function Header({ activeTab, setActiveTab, isDarkMode, toggleTheme, onMobileMenu
 
                 <nav className="desktop-tab-nav">
                     {tabs.map((tab) => (
-                        <button
+                        <NavLink
                             key={tab.id}
-                            className={`desktop-tab-btn ${activeTab === tab.id ? 'active' : ''}`}
-                            onClick={() => setActiveTab(tab.id)}
-                            role="tab"
-                            aria-selected={activeTab === tab.id}
+                            to={`/${tab.id}`}
+                            className={({ isActive }) => `desktop-tab-btn ${isActive ? 'active' : ''}`}
+                            onClick={() => {
+                                // Scroll to top on click natively
+                                window.scrollTo(0, 0);
+                            }}
                         >
                             {tab.label}
-                        </button>
+                        </NavLink>
                     ))}
                 </nav>
 

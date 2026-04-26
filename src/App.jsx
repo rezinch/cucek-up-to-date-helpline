@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import BentoGrid from './components/BentoGrid';
@@ -12,7 +13,12 @@ import Notes from './components/tabs/Notes';
 import './style.css'; 
 
 function App() {
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const location = useLocation();
+  const navigate = useNavigate();
+  
+  // Extract activeTab from URL path
+  const activeTab = location.pathname.replace('/', '') || 'dashboard';
+  
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -24,20 +30,6 @@ function App() {
   };
 
   useEffect(() => {
-    const hashTab = window.location.hash.substring(1);
-    const validTabs = ['dashboard', 'helpdesk', 'bus', 'syllabus', 'hostels', 'qrcodes', 'contact', 'notes'];
-
-    let initialTab = 'dashboard';
-    if (validTabs.includes(hashTab)) {
-      initialTab = hashTab;
-    } else {
-      const storedTab = localStorage.getItem('ksu_active_tab');
-      if (validTabs.includes(storedTab)) {
-        initialTab = storedTab;
-      }
-    }
-    setActiveTab(initialTab);
-
     const storedTheme = localStorage.getItem('ksu_theme');
     const isDark = storedTheme !== 'light';
     setIsDarkMode(isDark);
@@ -45,9 +37,7 @@ function App() {
   }, []);
 
   const handleTabChange = (tab) => {
-    setActiveTab(tab);
-    localStorage.setItem('ksu_active_tab', tab);
-    window.location.hash = tab;
+    navigate(`/${tab}`);
     setMobileMenuOpen(false); 
     window.scrollTo(0, 0);
   };
@@ -88,14 +78,19 @@ function App() {
       </div>
 
       <main id="mainContent">
-        {activeTab === 'dashboard' && <BentoGrid setActiveTab={handleTabChange} />}
-        {activeTab === 'helpdesk' && <div className="container py-16"><Helpdesk /></div>}
-        {activeTab === 'bus' && <div className="container py-16"><BusTimings /></div>}
-        {activeTab === 'syllabus' && <div className="container py-16"><Syllabus /></div>}
-        {activeTab === 'hostels' && <div className="container py-16"><Hostels /></div>}
-        {activeTab === 'qrcodes' && <div className="container py-16"><AdditionalLinks /></div>}
-        {activeTab === 'contact' && <div className="container py-16"><ContactUs /></div>}
-        {activeTab === 'notes' && <div className="container py-16"><Notes /></div>}
+        <Routes>
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/dashboard" element={<BentoGrid setActiveTab={handleTabChange} />} />
+          <Route path="/helpdesk" element={<div className="container py-16"><Helpdesk /></div>} />
+          <Route path="/bus" element={<div className="container py-16"><BusTimings /></div>} />
+          <Route path="/syllabus" element={<div className="container py-16"><Syllabus /></div>} />
+          <Route path="/hostels" element={<div className="container py-16"><Hostels /></div>} />
+          <Route path="/qrcodes" element={<div className="container py-16"><AdditionalLinks /></div>} />
+          <Route path="/contact" element={<div className="container py-16"><ContactUs /></div>} />
+          <Route path="/notes" element={<div className="container py-16"><Notes /></div>} />
+          {/* Fallback route */}
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        </Routes>
       </main>
 
       <Footer />
