@@ -60,7 +60,7 @@ function BusTimings() {
                                 <tr>
                                     <th>From Station</th>
                                     <th>Time</th>
-                                    <th className="divider">To Station</th>
+                                    <th className="divider">From Station</th>
                                     <th>Time</th>
                                 </tr>
                             </thead>
@@ -79,7 +79,7 @@ function BusTimings() {
                                 <tr>
                                     <th>From Station</th>
                                     <th>Time</th>
-                                    <th className="divider">To Station</th>
+                                    <th className="divider">From Station</th>
                                     <th>Time</th>
                                 </tr>
                             </thead>
