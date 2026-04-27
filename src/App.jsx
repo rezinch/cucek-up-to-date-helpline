@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
+import ReactGA from 'react-ga4';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import BentoGrid from './components/BentoGrid';
@@ -10,15 +11,25 @@ import Hostels from './components/tabs/Hostels';
 import AdditionalLinks from './components/tabs/AdditionalLinks';
 import ContactUs from './components/tabs/ContactUs';
 import Notes from './components/tabs/Notes';
-import './style.css'; 
+import './style.css';
 
 function App() {
   const location = useLocation();
   const navigate = useNavigate();
-  
+
+  useEffect(() => {
+    // Initialize Google Analytics (replace G-XXXXXXXXXX with your actual Measurement ID)
+    ReactGA.initialize('G-8M9V8L9FHD');
+  }, []);
+
+  useEffect(() => {
+    // Track page views on route change
+    ReactGA.send({ hitType: "pageview", page: location.pathname + location.search });
+  }, [location]);
+
   // Extract activeTab from URL path
   const activeTab = location.pathname.replace('/', '') || 'dashboard';
-  
+
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -38,7 +49,7 @@ function App() {
 
   const handleTabChange = (tab) => {
     navigate(`/${tab}`);
-    setMobileMenuOpen(false); 
+    setMobileMenuOpen(false);
     window.scrollTo(0, 0);
   };
 
@@ -62,7 +73,7 @@ function App() {
         toggleTheme={toggleTheme}
         onMobileMenuToggle={handleMobileMenuToggle}
       />
-      
+
       {/* Mobile Menu Drawer */}
       <div className={`mobile-menu ${mobileMenuOpen ? '' : 'hidden'}`} id="mobileMenu">
         <div className="mobile-menu-content">
