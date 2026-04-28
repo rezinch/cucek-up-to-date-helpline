@@ -1,3 +1,15 @@
+.install-hint-close {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.6rem;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  line-height: 1;
+}
+
 .install-hint {
   position: fixed;
   bottom: 1rem;
