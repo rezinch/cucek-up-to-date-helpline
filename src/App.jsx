@@ -12,6 +12,7 @@ import AdditionalLinks from './components/tabs/AdditionalLinks';
 import ContactUs from './components/tabs/ContactUs';
 import Notes from './components/tabs/Notes';
 import './style.css';
+import InstallHint from './components/InstallHint';
 
 function App() {
   const location = useLocation();
@@ -73,6 +74,7 @@ function App() {
         toggleTheme={toggleTheme}
         onMobileMenuToggle={handleMobileMenuToggle}
       />
+      <InstallHint />
 
       {/* Mobile Menu Drawer */}
       <div className={`mobile-menu ${mobileMenuOpen ? '' : 'hidden'}`} id="mobileMenu">

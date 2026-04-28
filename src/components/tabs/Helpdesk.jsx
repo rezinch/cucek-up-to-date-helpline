@@ -65,6 +65,14 @@ const helpdeskData = [
             { name: "Aslam", phone: "7994595108" },
             { name: "Amil", phone: "8129154915" }
         ]
+    },
+    {
+        img: '/icon/let.png',
+        head: "Lateral Entry",
+        persons: [
+            { name: "Vaishakh", phone: "9567615925" },
+            { name: "Shadil", phone: "6238313220" }
+        ]
     }
 ];
 
