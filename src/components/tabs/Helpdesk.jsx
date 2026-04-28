@@ -6,9 +6,10 @@ const helpdeskData = [
         img: '/icon/generalenquiry.png',
         head: "General Enquiry",
         persons: [
-            { name: "Unais", phone: "8078494673" },
-            { name: "Eesa", phone: "9072341909" },
-            { name: "Anand", phone: "9061564501" }
+            { name: "Sahil", phone: "7907176934" },
+            { name: "Anand", phone: "9061564501" },
+            { name: "Jasil", phone: "9496076603" }
+
         ]
     },
     {
@@ -24,9 +25,10 @@ const helpdeskData = [
         img: '/icon/ec.png',
         head: "Electronics & Communication Engineering",
         persons: [
-            { name: "Hari", phone: "8590170265" },
             { name: "Rezin", phone: "8086982257" },
-            { name: "Kiran", phone: "8086091942" }
+            { name: "Bhagath", phone: "8281322839" },
+            { name: "Gopika", phone: "9495868236" },
+            { name: "Rabin", phone: "9539238480" }
         ]
     },
     {
@@ -41,9 +43,11 @@ const helpdeskData = [
         img: '/icon/cs.png',
         head: "Computer Science & Engineering",
         persons: [
-            { name: "Maria", phone: "9072955673" },
-            { name: "Sijin", phone: "8590912038" },
-            { name: "Kiran S", phone: "8848259608" }
+            { name: "Kiran S", phone: "8848259608" },
+            { name: "Abhijith", phone: "9846917479" },
+            { name: "Razan", phone: "9074589774" },
+            { name: "Sradhha", phone: "9645173772" }
+
         ]
     },
     {
