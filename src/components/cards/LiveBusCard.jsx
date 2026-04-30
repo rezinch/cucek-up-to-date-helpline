@@ -96,14 +96,14 @@ export default function LiveBusCard({ setActiveTab }) {
         return (
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '1rem' }}>
                 <div style={{ padding: '1rem', background: 'var(--color-slate-800)', borderRadius: '12px' }}>
-                    <div style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>Next to {toName}</div>
+                    <div style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>To {toName}</div>
                     <div className="bus-time">{nextFrom ? nextFrom.time : '--:--'}</div>
                     <div style={{ fontSize: '0.8rem', marginTop: '0.5rem', color: 'var(--color-electric-blue)' }}>
                         {nextFrom ? `in ${nextFrom.diff} min` : ''}
                     </div>
                 </div>
                 <div style={{ padding: '1rem', background: 'var(--color-slate-800)', borderRadius: '12px' }}>
-                    <div style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>Next to {fromName}</div>
+                    <div style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>From {toName}</div>
                     <div className="bus-time">{nextTo ? nextTo.time : '--:--'}</div>
                     <div style={{ fontSize: '0.8rem', marginTop: '0.5rem', color: 'var(--color-electric-blue)' }}>
                         {nextTo ? `in ${nextTo.diff} min` : ''}
