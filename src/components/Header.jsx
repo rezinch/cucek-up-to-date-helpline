@@ -20,14 +20,17 @@ function Header({ activeTab, setActiveTab, isDarkMode, toggleTheme, onMobileMenu
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
                     <h1 className="logo" id="logo">CUCEK UP-TO-DATE</h1>
                     <span style={{
-                        fontSize: '0.65rem',
-                        fontWeight: '500',
+                        fontSize: '1rem',
+                        fontWeight: '700',
                         color: 'var(--color-text-secondary)',
-                        letterSpacing: '0.08em',
+                        letterSpacing: '0.01em',
                         textTransform: 'uppercase',
                         marginTop: '-2px',
                         paddingLeft: '1px',
-                    }}>by KSU CUCEK 💙</span>
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '1px',
+                    }}>by KSU CUCEK <img src="/blah.png" alt="" style={{ width: '35px', height: '35px', objectFit: 'contain', display: 'inline-block' }} /></span>
                 </div>
 
                 <nav className="desktop-tab-nav">
