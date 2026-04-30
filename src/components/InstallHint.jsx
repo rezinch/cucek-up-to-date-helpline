@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './InstallHint.css';
+import { requestForToken } from '../firebase';
 
 export default function InstallHint() {
   const [isVisible, setIsVisible] = useState(false);
@@ -32,6 +33,12 @@ export default function InstallHint() {
   const handleClose = () => {
     setIsVisible(false);
     localStorage.setItem('installPromptDismissed', 'true');
+  };
+
+  const handleGotIt = async () => {
+    setIsVisible(false);
+    localStorage.setItem('installPromptDismissed', 'true');
+    await requestForToken();
   };
 
   return (
@@ -68,7 +75,7 @@ export default function InstallHint() {
           )}
         </div>
         
-        <button className="install-btn-primary" onClick={handleClose}>
+        <button className="install-btn-primary" onClick={handleGotIt}>
           Got it
         </button>
       </div>

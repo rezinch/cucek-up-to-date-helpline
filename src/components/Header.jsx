@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Moon, Sun, Menu, Download } from 'lucide-react';
+import { Moon, Sun, Menu, Download, Bell } from 'lucide-react';
 import { usePWAInstall } from '../hooks/usePWAInstall';
+import { requestForToken } from '../firebase';
 
 function Header({ activeTab, setActiveTab, isDarkMode, toggleTheme, onMobileMenuToggle }) {
     const { isInstallable, install } = usePWAInstall();
+    const [notificationPermission, setNotificationPermission] = useState(
+        typeof window !== 'undefined' ? Notification.permission : 'default'
+    );
+
     const tabs = [
         { id: 'dashboard', label: 'Dashboard' },
         { id: 'notes', label: 'Notes & Prev Qns' },
@@ -13,6 +18,27 @@ function Header({ activeTab, setActiveTab, isDarkMode, toggleTheme, onMobileMenu
         { id: 'helpdesk', label: 'Helpdesk' },
         { id: 'contact', label: 'Contact Us' }
     ];
+
+    const handleEnableNotifications = async () => {
+        const token = await requestForToken();
+        if (token) {
+            setNotificationPermission('granted');
+        } else {
+            // Update even if denied to keep state in sync
+            setNotificationPermission(Notification.permission);
+        }
+    };
+
+    // Keep permission in sync (e.g. if granted elsewhere)
+    useEffect(() => {
+        if (typeof window === 'undefined') return;
+        const interval = setInterval(() => {
+            if (Notification.permission !== notificationPermission) {
+                setNotificationPermission(Notification.permission);
+            }
+        }, 2000);
+        return () => clearInterval(interval);
+    }, [notificationPermission]);
 
     return (
         <header className="header" id="header">
@@ -49,7 +75,18 @@ function Header({ activeTab, setActiveTab, isDarkMode, toggleTheme, onMobileMenu
                     ))}
                 </nav>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    {notificationPermission !== 'granted' && (
+                        <button
+                            className="theme-switch"
+                            onClick={handleEnableNotifications}
+                            aria-label="Enable Notifications"
+                            title="Enable Notifications"
+                            style={{ color: 'var(--color-electric-blue)' }}
+                        >
+                            <Bell size={20} />
+                        </button>
+                    )}
                     {isInstallable && (
                         <button
                             className="theme-switch"
