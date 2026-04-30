@@ -8,8 +8,8 @@ const helpdeskData = [
         persons: [
             { name: "Sahil", phone: "7907176934" },
             { name: "Anand", phone: "9061564501" },
-            { name: "Jasil", phone: "9496076603" }
-
+            { name: "Jasil", phone: "9496076603" },
+            { name: "Sona", phone: "9778024331" }
         ]
     },
     {

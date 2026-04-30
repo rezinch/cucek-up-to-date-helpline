@@ -119,14 +119,14 @@ export default function NotificationBanner() {
                     [1, 2, 3].map(i => (
                         <div key={i} style={{
                             height: '52px', borderRadius: '10px',
-                            background: 'rgba(255,255,255,0.04)',
+                            background: 'var(--color-slate-700)',
                             animation: 'shimmer 1.5s infinite',
                         }} />
                     ))
                 ) : announcements.length === 0 ? (
                     <div style={{
                         textAlign: 'center', padding: '1.5rem',
-                        color: 'rgba(156,163,175,0.6)', fontSize: '0.875rem',
+                        color: 'var(--color-text-secondary)', fontSize: '0.875rem',
                     }}>
                         No announcements yet.
                     </div>
@@ -142,10 +142,10 @@ export default function NotificationBanner() {
                                 borderRadius: '12px',
                                 background: idx === 0
                                     ? 'rgba(139,92,246,0.1)'
-                                    : 'rgba(255,255,255,0.03)',
+                                    : 'var(--color-slate-700)',
                                 border: idx === 0
                                     ? '1px solid rgba(139,92,246,0.25)'
-                                    : '1px solid rgba(255,255,255,0.05)',
+                                    : '1px solid var(--glass-border)',
                                 transition: 'background 0.2s',
                                 animation: `fadeInUp 0.3s ease ${idx * 0.04}s both`,
                             }}
@@ -154,9 +154,10 @@ export default function NotificationBanner() {
                             <div style={{
                                 width: '7px', height: '7px',
                                 borderRadius: '50%',
-                                background: idx === 0 ? '#A78BFA' : 'rgba(156,163,175,0.4)',
+                                background: idx === 0 ? '#A78BFA' : 'var(--color-text-secondary)',
                                 flexShrink: 0,
                                 marginTop: '0.45rem',
+                                opacity: idx === 0 ? 1 : 0.5,
                             }} />
 
                             {/* Text */}
@@ -165,14 +166,14 @@ export default function NotificationBanner() {
                                     <span style={{
                                         fontWeight: '700',
                                         fontSize: '0.9rem',
-                                        color: idx === 0 ? '#E9D5FF' : 'var(--color-text-primary)',
+                                        color: idx === 0 ? '#8B5CF6' : 'var(--color-text-primary)',
                                         whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
                                     }}>
                                         {item.title}
                                     </span>
                                     <span style={{
                                         fontSize: '0.7rem',
-                                        color: 'rgba(156,163,175,0.6)',
+                                        color: 'var(--color-text-secondary)',
                                         flexShrink: 0,
                                         whiteSpace: 'nowrap',
                                     }}>
@@ -183,7 +184,7 @@ export default function NotificationBanner() {
                                     <p style={{
                                         margin: '0.15rem 0 0',
                                         fontSize: '0.82rem',
-                                        color: 'rgba(156,163,175,0.8)',
+                                        color: 'var(--color-text-primary)',
                                         lineHeight: '1.4',
                                         display: '-webkit-box',
                                         WebkitLineClamp: 2,

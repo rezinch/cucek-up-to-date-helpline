@@ -17,7 +17,18 @@ function Header({ activeTab, setActiveTab, isDarkMode, toggleTheme, onMobileMenu
     return (
         <header className="header" id="header">
             <div className="header-container">
-                <h1 className="logo" id="logo">CUCEK UP-TO-DATE</h1>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
+                    <h1 className="logo" id="logo">CUCEK UP-TO-DATE</h1>
+                    <span style={{
+                        fontSize: '0.65rem',
+                        fontWeight: '500',
+                        color: 'var(--color-text-secondary)',
+                        letterSpacing: '0.08em',
+                        textTransform: 'uppercase',
+                        marginTop: '-2px',
+                        paddingLeft: '1px',
+                    }}>by KSU CUCEK 💙</span>
+                </div>
 
                 <nav className="desktop-tab-nav">
                     {tabs.map((tab) => (
