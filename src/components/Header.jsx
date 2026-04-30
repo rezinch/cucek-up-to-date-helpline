@@ -15,6 +15,7 @@ function Header({ activeTab, setActiveTab, isDarkMode, toggleTheme, onMobileMenu
         { id: 'notes', label: 'Notes & Prev Qns' },
         { id: 'bus', label: 'Bus Timings' },
         { id: 'syllabus', label: 'Syllabus' },
+        { id: 'hostels', label: 'Hostels' },
         { id: 'helpdesk', label: 'Helpdesk' },
         { id: 'contact', label: 'Contact Us' }
     ];

@@ -106,6 +106,7 @@ function App() {
           <button className="mobile-tab-btn" onClick={() => handleTabChange('helpdesk')}>Helpdesk</button>
           <button className="mobile-tab-btn" onClick={() => handleTabChange('bus')}>Bus Timings</button>
           <button className="mobile-tab-btn" onClick={() => handleTabChange('syllabus')}>Syllabus</button>
+          <button className="mobile-tab-btn" onClick={() => handleTabChange('hostels')}>Hostels</button>
           <button className="mobile-tab-btn" onClick={() => handleTabChange('notes')}>Notes</button>
           <button className="mobile-tab-btn" onClick={() => handleTabChange('qrcodes')}>Additional Links</button>
           <button className="mobile-tab-btn" onClick={() => handleTabChange('contact')}>Contact Us</button>
