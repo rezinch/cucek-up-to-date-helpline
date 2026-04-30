@@ -27,7 +27,7 @@ messaging.onBackgroundMessage((payload) => {
   self.registration.showNotification(notificationTitle, notificationOptions);
 });
 
-const CACHE_NAME = 'ksu-cucek-cache-v2';
+const CACHE_NAME = 'ksu-cucek-cache-v3';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -38,6 +38,8 @@ const urlsToCache = [
 
 // Install the service worker and cache the app's shell files
 self.addEventListener('install', event => {
+  // Force the waiting service worker to become the active service worker.
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
@@ -70,6 +72,8 @@ self.addEventListener('fetch', event => {
 
 // Clear old caches when a new service worker activates
 self.addEventListener('activate', event => {
+  // Allow the service worker to take control of the page immediately
+  event.waitUntil(clients.claim());
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
@@ -82,6 +86,8 @@ self.addEventListener('activate', event => {
       );
     })
   );
+});
+
 // Handle notification click to open the app
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
