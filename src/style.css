@@ -129,6 +129,9 @@ h6 {
   font-weight: 600;
   letter-spacing: -0.02em;
 }
+main {
+  margin-top: 1rem;
+}
 
 a {
   color: var(--color-electric-blue);
