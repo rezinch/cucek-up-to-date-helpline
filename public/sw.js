@@ -20,7 +20,8 @@ messaging.onBackgroundMessage((payload) => {
   const notificationTitle = payload.notification?.title || 'Background Message Title';
   const notificationOptions = {
     body: payload.notification?.body || 'Background Message body.',
-    icon: '/icon/favicon.ico'
+    icon: '/icon/logo.png',
+    badge: '/icon/icon-192x192.png'
   };
 
   self.registration.showNotification(notificationTitle, notificationOptions);
@@ -79,6 +80,26 @@ self.addEventListener('activate', event => {
           }
         })
       );
+    })
+  );
+// Handle notification click to open the app
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+      // If a window is already open, focus it
+      if (clientList.length > 0) {
+        let client = clientList[0];
+        for (let i = 0; i < clientList.length; i++) {
+          if (clientList[i].focused) {
+            client = clientList[i];
+          }
+        }
+        return client.focus();
+      }
+      // If no window is open, open a new one
+      return clients.openWindow('/');
     })
   );
 });
