@@ -12,6 +12,7 @@ import AdditionalLinks from './components/tabs/AdditionalLinks';
 import ContactUs from './components/tabs/ContactUs';
 import Notes from './components/tabs/Notes';
 import Admin from './components/tabs/Admin';
+import BottomNav from './components/BottomNav';
 import './style.css';
 import InstallHint from './components/InstallHint';
 import { requestForToken, onMessageListener } from './firebase';
@@ -129,6 +130,7 @@ function App() {
       </main>
 
       <Footer />
+      <BottomNav />
     </>
   );
 }
