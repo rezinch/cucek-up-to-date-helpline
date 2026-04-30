@@ -86,10 +86,18 @@ function Header({ activeTab, setActiveTab, isDarkMode, toggleTheme, onMobileMenu
                             <Bell size={20} />
                         </button>
                     )}
-                    {isInstallable && (
+                    {/* Show install button if not already installed */}
+                    {!(window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) && (
                         <button
                             className="theme-switch"
-                            onClick={install}
+                            onClick={() => {
+                                if (isInstallable) {
+                                    install();
+                                } else {
+                                    // Custom instruction for iOS/other browsers
+                                    alert('To install this app:\n\n1. Tap the "Share" button (usually at the bottom)\n2. Scroll down and tap "Add to Home Screen"');
+                                }
+                            }}
                             aria-label="Install App"
                             title="Install App"
                         >
