@@ -26,13 +26,10 @@ messaging.onBackgroundMessage((payload) => {
   self.registration.showNotification(notificationTitle, notificationOptions);
 });
 
-const CACHE_NAME = 'ksu-cucek-cache-v1';
+const CACHE_NAME = 'ksu-cucek-cache-v2';
 const urlsToCache = [
   '/',
   '/index.html',
-  '/style.css',
-  '/app.js',
-  '/helpdesk.js',
   '/manifest.json',
   '/icon/icon-192x192.png',
   '/icon/icon-512x512.png'
@@ -49,17 +46,39 @@ self.addEventListener('install', event => {
   );
 });
 
-// Serve cached content when offline, and fetch from network otherwise
+// Use Network-First strategy to ensure we always get the latest JS chunks from Vercel
 self.addEventListener('fetch', event => {
+  if (event.request.method !== 'GET') return;
+
   event.respondWith(
-    caches.match(event.request)
+    fetch(event.request)
       .then(response => {
-        // If the file is in the cache, return it
-        if (response) {
-          return response;
-        }
-        // Otherwise, fetch it from the network
-        return fetch(event.request);
+        // If network fetch succeeds, cache it and return
+        const responseClone = response.clone();
+        caches.open(CACHE_NAME).then(cache => {
+          cache.put(event.request, responseClone);
+        });
+        return response;
       })
+      .catch(() => {
+        // If network fails (offline), fallback to cache
+        return caches.match(event.request);
+      })
+  );
+});
+
+// Clear old caches when a new service worker activates
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          if (cacheName !== CACHE_NAME) {
+            console.log('Clearing old cache:', cacheName);
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
   );
 });
