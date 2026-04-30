@@ -247,12 +247,12 @@ a {
 /* Mobile Menu */
 .mobile-menu {
   position: fixed;
-  top: 70px;
+  top: 100px;
   left: 0;
   width: 100%;
   background: var(--glass-bg);
   backdrop-filter: blur(12px);
-  z-index: 40;
+  z-index: 999;
   border-bottom: 1px solid var(--glass-border);
 }
 

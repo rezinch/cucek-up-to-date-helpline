@@ -5,7 +5,7 @@ import NotificationBanner from './cards/NotificationBanner';
 
 export default function BentoGrid({ setActiveTab }) {
     return (
-        <div className="container" style={{ paddingTop: '4rem' }}>
+        <div className="container" style={{ paddingTop: '5rem' }}>
             <div className="bento-grid">
                 <NotificationBanner />
                 <LiveBusCard setActiveTab={setActiveTab} />
