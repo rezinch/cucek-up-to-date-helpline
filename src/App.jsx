@@ -11,8 +11,10 @@ import Hostels from './components/tabs/Hostels';
 import AdditionalLinks from './components/tabs/AdditionalLinks';
 import ContactUs from './components/tabs/ContactUs';
 import Notes from './components/tabs/Notes';
+import Admin from './components/tabs/Admin';
 import './style.css';
 import InstallHint from './components/InstallHint';
+import { requestForToken, onMessageListener } from './firebase';
 
 function App() {
   const location = useLocation();
@@ -27,6 +29,26 @@ function App() {
     // Track page views on route change
     ReactGA.send({ hitType: "pageview", page: location.pathname + location.search });
   }, [location]);
+
+  useEffect(() => {
+    requestForToken().then((token) => {
+      if (token) {
+        console.log('Firebase registration token:', token);
+        // Save token to state or local storage if needed
+      }
+    });
+
+    const unsubscribe = onMessageListener((payload) => {
+      if (payload) {
+        console.log('Received foreground message', payload);
+        alert(`New Notification: ${payload?.notification?.title}\n${payload?.notification?.body}`);
+      }
+    });
+
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
+  }, []);
 
   // Extract activeTab from URL path
   const activeTab = location.pathname.replace('/', '') || 'dashboard';
@@ -101,6 +123,7 @@ function App() {
           <Route path="/qrcodes" element={<div className="container py-16"><AdditionalLinks /></div>} />
           <Route path="/contact" element={<div className="container py-16"><ContactUs /></div>} />
           <Route path="/notes" element={<div className="container py-16"><Notes /></div>} />
+          <Route path="/adminkuttan" element={<div className="container py-16"><Admin /></div>} />
           {/* Fallback route */}
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>

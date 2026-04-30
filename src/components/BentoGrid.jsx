@@ -1,11 +1,13 @@
 import React from 'react';
 import LiveBusCard from './cards/LiveBusCard';
 import SyllabusCard from './cards/SyllabusCard';
+import NotificationBanner from './cards/NotificationBanner';
 
 export default function BentoGrid({ setActiveTab }) {
     return (
         <div className="container" style={{ paddingTop: '2rem' }}>
             <div className="bento-grid">
+                <NotificationBanner />
                 <LiveBusCard setActiveTab={setActiveTab} />
 
 
