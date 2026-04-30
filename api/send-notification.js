@@ -65,7 +65,7 @@ export default async function handler(req, res) {
         if (tokens.length > 0) {
             // FCM allows max 500 tokens per multicast request
             const payload = {
-                notification: {
+                data: {
                     title: title,
                     body: message,
                 },

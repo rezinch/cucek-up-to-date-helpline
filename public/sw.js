@@ -17,17 +17,24 @@ const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage((payload) => {
   console.log('[sw.js] Received background message ', payload);
-  const notificationTitle = payload.notification?.title || 'Background Message Title';
+  
+  // Prioritize data payload (sent from our server to avoid duplicates)
+  // Fallback to notification payload for compatibility
+  const title = payload.data?.title || payload.notification?.title || 'CUCEK UP-TO-DATE';
+  const body = payload.data?.body || payload.notification?.body || '';
+
   const notificationOptions = {
-    body: payload.notification?.body || 'Background Message body.',
+    body: body,
     icon: '/icon/logo.png',
-    badge: '/icon/icon-192x192.png'
+    badge: '/icon/icon-192x192.png',
+    tag: 'ksu-announcement', // Prevent multiple notifications for the same event
+    renotify: true
   };
 
-  self.registration.showNotification(notificationTitle, notificationOptions);
+  self.registration.showNotification(title, notificationOptions);
 });
 
-const CACHE_NAME = 'ksu-cucek-cache-v3';
+const CACHE_NAME = 'ksu-cucek-cache-v4';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -38,7 +45,6 @@ const urlsToCache = [
 
 // Install the service worker and cache the app's shell files
 self.addEventListener('install', event => {
-  // Force the waiting service worker to become the active service worker.
   self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME)
@@ -49,14 +55,12 @@ self.addEventListener('install', event => {
   );
 });
 
-// Use Network-First strategy to ensure we always get the latest JS chunks from Vercel
+// Use Network-First strategy
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
-
   event.respondWith(
     fetch(event.request)
       .then(response => {
-        // If network fetch succeeds, cache it and return
         const responseClone = response.clone();
         caches.open(CACHE_NAME).then(cache => {
           cache.put(event.request, responseClone);
@@ -64,15 +68,13 @@ self.addEventListener('fetch', event => {
         return response;
       })
       .catch(() => {
-        // If network fails (offline), fallback to cache
         return caches.match(event.request);
       })
   );
 });
 
-// Clear old caches when a new service worker activates
+// Clear old caches
 self.addEventListener('activate', event => {
-  // Allow the service worker to take control of the page immediately
   event.waitUntil(clients.claim());
   event.waitUntil(
     caches.keys().then(cacheNames => {
@@ -94,7 +96,6 @@ self.addEventListener('notificationclick', (event) => {
 
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
-      // If a window is already open, focus it
       if (clientList.length > 0) {
         let client = clientList[0];
         for (let i = 0; i < clientList.length; i++) {
@@ -104,7 +105,6 @@ self.addEventListener('notificationclick', (event) => {
         }
         return client.focus();
       }
-      // If no window is open, open a new one
       return clients.openWindow('/');
     })
   );
