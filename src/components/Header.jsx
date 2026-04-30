@@ -44,7 +44,7 @@ function Header({ activeTab, setActiveTab, isDarkMode, toggleTheme, onMobileMenu
     return (
         <header className="header" id="header">
             <div className="header-container">
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
+                <NavLink to="/dashboard" style={{ textDecoration: 'none', display: 'flex', flexDirection: 'column', gap: '0', flexShrink: 0 }}>
                     <h1 className="logo" id="logo">CUCEK UP-TO-DATE</h1>
                     <span className="subheading-text" style={{
                         color: 'var(--color-text-secondary)',
@@ -56,7 +56,7 @@ function Header({ activeTab, setActiveTab, isDarkMode, toggleTheme, onMobileMenu
                         alignItems: 'center',
                         gap: '0',
                     }}>by KSU CUCEK<img src="/blah.png" alt="" className="header-mascot" style={{ objectFit: 'contain', display: 'inline-block', marginLeft: '-8px' }} /></span>
-                </div>
+                </NavLink>
 
                 <nav className="desktop-tab-nav">
                     {tabs.map((tab) => (
@@ -74,7 +74,7 @@ function Header({ activeTab, setActiveTab, isDarkMode, toggleTheme, onMobileMenu
                     ))}
                 </nav>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexShrink: 0 }}>
                     {(window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) && notificationPermission !== 'granted' && (
                         <button
                             className="theme-switch"
