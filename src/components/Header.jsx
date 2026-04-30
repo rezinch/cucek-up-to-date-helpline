@@ -30,7 +30,7 @@ function Header({ activeTab, setActiveTab, isDarkMode, toggleTheme, onMobileMenu
                         display: 'flex',
                         alignItems: 'center',
                         gap: '1px',
-                    }}>by KSU CUCEK <img src="/blah.png" alt="" style={{ width: '35px', height: '35px', objectFit: 'contain', display: 'inline-block' }} /></span>
+                    }}>by KSU CUCEK <img src="/blah.png" alt="" style={{ width: '35px', height: '35px', objectFit: 'contain', display: 'inline-block', marginLeft: '-8px' }} /></span>
                 </div>
 
                 <nav className="desktop-tab-nav">
