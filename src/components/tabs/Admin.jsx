@@ -89,16 +89,15 @@ function LoginScreen({ onLogin }) {
     // Quick verify by calling the send-notification endpoint with an empty payload
     // We use it purely to validate credentials
     try {
-      const res = await fetch('/api/send-notification', {
+      const res = await fetch('/api/verify-admin', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password, title: '__auth_check__', message: '__auth_check__' })
+        body: JSON.stringify({ username, password })
       });
       const data = await res.json();
       if (res.status === 401) {
         setError('Invalid username or password.');
-      } else if (res.ok || res.status !== 401) {
-        // Accepted (even if sending fails for other reasons, creds are valid)
+      } else if (res.ok) {
         onLogin({ username, password });
       } else {
         setError(data.message || 'Login failed.');
