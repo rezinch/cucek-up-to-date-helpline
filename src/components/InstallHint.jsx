@@ -35,12 +35,6 @@ export default function InstallHint() {
     localStorage.setItem('installPromptDismissed', 'true');
   };
 
-  const handleGotIt = async () => {
-    setIsVisible(false);
-    localStorage.setItem('installPromptDismissed', 'true');
-    await requestForToken();
-  };
-
   return (
     <div className="install-modal-overlay">
       <div className="install-modal-content">
@@ -75,7 +69,7 @@ export default function InstallHint() {
           )}
         </div>
         
-        <button className="install-btn-primary" onClick={handleGotIt}>
+        <button className="install-btn-primary" onClick={handleClose}>
           Got it
         </button>
       </div>

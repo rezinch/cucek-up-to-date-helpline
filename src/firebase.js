@@ -21,6 +21,16 @@ const db = getFirestore(app);
 
 export const requestForToken = async () => {
   if (!messaging) return null;
+  
+  // Only allow notifications for installed PWA users
+  const isStandalone = typeof window !== 'undefined' && 
+    (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone);
+  
+  if (!isStandalone) {
+    console.log('Notifications are restricted to installed app users.');
+    return null;
+  }
+
   try {
     const permission = await Notification.requestPermission();
     if (permission !== 'granted') {
