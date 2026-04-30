@@ -13,15 +13,6 @@ const helpdeskData = [
         ]
     },
     {
-        img: '/icon/it.png',
-        head: "Information Technology",
-        persons: [
-            { name: "Eesa", phone: "9072341909" },
-            { name: "Niswan", phone: "9061891616" },
-            { name: "Sahil", phone: "7907176934" }
-        ]
-    },
-    {
         img: '/icon/ec.png',
         head: "Electronics & Communication Engineering",
         persons: [
@@ -29,14 +20,6 @@ const helpdeskData = [
             { name: "Bhagath", phone: "8281322839" },
             { name: "Gopika", phone: "9495868236" },
             { name: "Rabin", phone: "9539238480" }
-        ]
-    },
-    {
-        img: '/icon/eee.png',
-        head: "Electrical & Electronics Engineering",
-        persons: [
-            { name: "Shinan", phone: "8156808440" },
-            { name: "Shahzad", phone: "8590465414" }
         ]
     },
     {
@@ -51,19 +34,37 @@ const helpdeskData = [
         ]
     },
     {
+        img: '/icon/it.png',
+        head: "Information Technology",
+        persons: [
+            { name: "Eyas", phone: "9563006135" },
+            { name: "Hathim", phone: "8714254600" },
+            { name: "Jawad", phone: "8075529949" },
+            { name: "Afnan", phone: "8078776277" }
+        ]
+    },
+
+    {
         img: '/icon/civil.png',
         head: "Civil Engineering",
         persons: [
             { name: "Hani", phone: "9495556338" },
-            { name: "Lara", phone: "8547244149" }
+            { name: "Vibha", phone: "7907763968" }
         ]
     },
     {
         img: '/icon/mca.png',
         head: "MCA",
         persons: [
-            { name: "Aslam", phone: "7994595108" },
-            { name: "Amil", phone: "8129154915" }
+            { name: "Salih", phone: "8921769692" },
+            { name: "Akhil", phone: "9400280130" }
+        ]
+    },
+    {
+        img: '/icon/eee.png',
+        head: "Electrical & Electronics Engineering",
+        persons: [
+            { name: "Shinan", phone: "8156808440" }
         ]
     },
     {
