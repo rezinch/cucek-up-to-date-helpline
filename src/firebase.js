@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getMessaging, getToken, onMessage } from "firebase/messaging";
+import { getMessaging, getToken, onMessage, isSupported } from "firebase/messaging";
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore, doc, setDoc } from "firebase/firestore";
 
@@ -15,21 +15,35 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = typeof window !== 'undefined' ? getAnalytics(app) : null;
-
-let messaging = null;
-try {
-  // Only attempt to get messaging if the browser supports Service Workers
-  if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
-    messaging = getMessaging(app);
-  }
-} catch (e) {
-  console.warn('Firebase Messaging is not supported in this environment:', e);
-}
-
 const db = getFirestore(app);
 
+// Safe initialization for Analytics and Messaging
+let analytics = null;
+let messaging = null;
+
+if (typeof window !== 'undefined') {
+  try {
+    analytics = getAnalytics(app);
+  } catch (e) {
+    console.warn("Firebase Analytics not supported in this environment.");
+  }
+
+  // isSupported() check is essential for Safari/iOS stability
+  isSupported().then(supported => {
+    if (supported) {
+      try {
+        messaging = getMessaging(app);
+      } catch (e) {
+        console.error("Failed to initialize Firebase Messaging:", e);
+      }
+    }
+  }).catch(() => {
+    console.log("Messaging is not supported in this browser.");
+  });
+}
+
 export const requestForToken = async () => {
+  // If messaging is not supported or failed to init, return null early
   if (!messaging) return null;
   
   // Only allow notifications for installed PWA users
@@ -42,7 +56,7 @@ export const requestForToken = async () => {
   }
 
   try {
-    // Check if Notification API exists (Safari < 16.4 doesn't have it)
+    // Check if Notification API exists (prevents crash on older Safari)
     if (typeof Notification === 'undefined') {
       console.log('Notification API not supported.');
       return null;
@@ -59,6 +73,7 @@ export const requestForToken = async () => {
       vapidKey: 'BACbHMubYWhh40BmpHwTxhn3gbMrbXYKs5kM8B_WNUe8pA6dDzaFiy2VgJNyx0wNRDeYgS0GEFOH9L8zmIuAdNk',
       serviceWorkerRegistration: registration
     });
+
     if (currentToken) {
       console.log('FCM Token:', currentToken);
       try {
@@ -71,7 +86,7 @@ export const requestForToken = async () => {
       }
       return currentToken;
     } else {
-      console.log('No registration token available. Request permission to generate one.');
+      console.log('No registration token available.');
       return null;
     }
   } catch (err) {
@@ -81,9 +96,10 @@ export const requestForToken = async () => {
 };
 
 export const onMessageListener = (callback) => {
-  if (!messaging) return;
+  // Guard against null messaging
+  if (!messaging) return () => {};
   return onMessage(messaging, (payload) => {
-    console.log("payload", payload);
+    console.log("Received foreground message", payload);
     if (callback) callback(payload);
   });
 };
