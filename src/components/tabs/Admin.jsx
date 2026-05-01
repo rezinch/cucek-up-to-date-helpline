@@ -1,8 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy, getCountFromServer } from 'firebase/firestore';
 import { db } from '../../firebase';
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
+const IconDevices = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+    <line x1="12" y1="18" x2="12.01" y2="18"/>
+  </svg>
+);
 const IconLock = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
@@ -581,8 +587,25 @@ function AddSection({ creds, showToast }) {
 export default function Admin() {
   const [creds, setCreds] = useState(null);
   const [toast, setToast] = useState(null);
+  const [deviceCount, setDeviceCount] = useState(null);
 
   const showToast = useCallback((t) => setToast(t), []);
+
+  const fetchDeviceCount = useCallback(async () => {
+    try {
+      const coll = collection(db, 'tokens');
+      const snapshot = await getCountFromServer(coll);
+      setDeviceCount(snapshot.data().count);
+    } catch (e) {
+      console.error("Error fetching device count:", e);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (creds) {
+      fetchDeviceCount();
+    }
+  }, [creds, fetchDeviceCount]);
 
   return (
     <>
@@ -627,9 +650,21 @@ export default function Admin() {
               }}>
                 Admin Panel
               </h1>
-              <p style={{ margin: '0.25rem 0 0', color: 'var(--color-text-secondary)', fontSize: '0.875rem' }}>
-                Logged in as <strong style={{ color: 'var(--color-text-primary)' }}>{creds.username}</strong>
-              </p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginTop: '0.25rem' }}>
+                <p style={{ margin: 0, color: 'var(--color-text-secondary)', fontSize: '0.875rem' }}>
+                  Logged in as <strong style={{ color: 'var(--color-text-primary)' }}>{creds.username}</strong>
+                </p>
+                <div style={{ 
+                  height: '14px', width: '1px', background: 'var(--glass-border)' 
+                }} />
+                <div style={{ 
+                  display: 'flex', alignItems: 'center', gap: '0.4rem',
+                  color: '#60a5fa', fontSize: '0.875rem', fontWeight: '600'
+                }}>
+                  <IconDevices />
+                  <span>{deviceCount !== null ? deviceCount : '…'} devices installed</span>
+                </div>
+              </div>
             </div>
             <button
               id="admin-logout-btn"
