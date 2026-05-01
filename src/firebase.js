@@ -20,16 +20,18 @@ const db = getFirestore(app);
 // Safe initialization for Analytics and Messaging
 let analytics = null;
 let messaging = null;
+let messagingInitialized = false;
+let messagingPromise = null;
 
 if (typeof window !== 'undefined') {
   try {
     analytics = getAnalytics(app);
   } catch (e) {
-    console.warn("Firebase Analytics not supported in this environment.");
+    console.warn("Firebase Analytics not supported.");
   }
 
-  // isSupported() check is essential for Safari/iOS stability
-  isSupported().then(supported => {
+  // Store the promise so we can wait for it later
+  messagingPromise = isSupported().then(supported => {
     if (supported) {
       try {
         messaging = getMessaging(app);
@@ -37,12 +39,20 @@ if (typeof window !== 'undefined') {
         console.error("Failed to initialize Firebase Messaging:", e);
       }
     }
+    messagingInitialized = true;
+    return messaging;
   }).catch(() => {
-    console.log("Messaging is not supported in this browser.");
+    messagingInitialized = true;
+    return null;
   });
 }
 
 export const requestForToken = async () => {
+  // Wait for messaging to finish initializing if it hasn't yet
+  if (!messagingInitialized && messagingPromise) {
+    await messagingPromise;
+  }
+
   // If messaging is not supported or failed to init, return null early
   if (!messaging) return null;
   
@@ -96,12 +106,29 @@ export const requestForToken = async () => {
 };
 
 export const onMessageListener = (callback) => {
-  // Guard against null messaging
-  if (!messaging) return () => {};
-  return onMessage(messaging, (payload) => {
-    console.log("Received foreground message", payload);
-    if (callback) callback(payload);
-  });
+  if (messaging) {
+    return onMessage(messaging, (payload) => {
+      console.log("Received foreground message", payload);
+      if (callback) callback(payload);
+    });
+  }
+
+  // If not yet initialized, wait for the promise and then attach
+  let currentUnsubscribe = () => {};
+  if (messagingPromise) {
+    messagingPromise.then(m => {
+      if (m) {
+        currentUnsubscribe = onMessage(m, (payload) => {
+          console.log("Received foreground message", payload);
+          if (callback) callback(payload);
+        });
+      }
+    });
+  }
+  
+  return () => {
+    if (currentUnsubscribe) currentUnsubscribe();
+  };
 };
 
 export { app, messaging, db };

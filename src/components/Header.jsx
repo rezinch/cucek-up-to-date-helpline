@@ -7,7 +7,7 @@ import { requestForToken } from '../firebase';
 function Header({ activeTab, setActiveTab, isDarkMode, toggleTheme, onMobileMenuToggle }) {
     const { isInstallable, install } = usePWAInstall();
     const [notificationPermission, setNotificationPermission] = useState(
-        typeof window !== 'undefined' ? Notification.permission : 'default'
+        typeof Notification !== 'undefined' ? Notification.permission : 'default'
     );
 
     const tabs = [
@@ -26,13 +26,15 @@ function Header({ activeTab, setActiveTab, isDarkMode, toggleTheme, onMobileMenu
             setNotificationPermission('granted');
         } else {
             // Update even if denied to keep state in sync
-            setNotificationPermission(Notification.permission);
+            if (typeof Notification !== 'undefined') {
+                setNotificationPermission(Notification.permission);
+            }
         }
     };
 
     // Keep permission in sync (e.g. if granted elsewhere)
     useEffect(() => {
-        if (typeof window === 'undefined') return;
+        if (typeof Notification === 'undefined') return;
         const interval = setInterval(() => {
             if (Notification.permission !== notificationPermission) {
                 setNotificationPermission(Notification.permission);
