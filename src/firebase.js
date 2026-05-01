@@ -16,7 +16,17 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = typeof window !== 'undefined' ? getAnalytics(app) : null;
-const messaging = typeof window !== 'undefined' ? getMessaging(app) : null;
+
+let messaging = null;
+try {
+  // Only attempt to get messaging if the browser supports Service Workers
+  if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+    messaging = getMessaging(app);
+  }
+} catch (e) {
+  console.warn('Firebase Messaging is not supported in this environment:', e);
+}
+
 const db = getFirestore(app);
 
 export const requestForToken = async () => {
@@ -32,6 +42,12 @@ export const requestForToken = async () => {
   }
 
   try {
+    // Check if Notification API exists (Safari < 16.4 doesn't have it)
+    if (typeof Notification === 'undefined') {
+      console.log('Notification API not supported.');
+      return null;
+    }
+
     const permission = await Notification.requestPermission();
     if (permission !== 'granted') {
       console.log('Notification permission not granted by user.');
