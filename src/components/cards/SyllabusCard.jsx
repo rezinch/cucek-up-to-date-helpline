@@ -9,7 +9,7 @@ const schemesData = {
     ec: ['2019', '2023'],
     ee: ['2019', '2023'],
     it: ['2019', '2023'],
-    mca: ['2012']
+    mca: ['2012', '2023']
 };
 
 export default function SyllabusCard() {
@@ -77,7 +77,7 @@ export default function SyllabusCard() {
                             >
                                 <option value="">Select Scheme</option>
                                 {schemesData[branch].map(s => (
-                                    <option key={s} value={s}>{s}</option>
+                                    <option key={s} value={s}>{s === '2023' ? '2023 & 2025' : s}</option>
                                 ))}
                             </select>
                         </motion.div>

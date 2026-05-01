@@ -64,7 +64,9 @@ const helpdeskData = [
         img: '/icon/eee.png',
         head: "Electrical & Electronics Engineering",
         persons: [
-            { name: "Shinan", phone: "8156808440" }
+            { name: "Shinan", phone: "8156808440" },
+            { name: "Anshad", phone: "8921481142" },
+            { name: "Harsha", phone: "9746473725" }
         ]
     },
     {
