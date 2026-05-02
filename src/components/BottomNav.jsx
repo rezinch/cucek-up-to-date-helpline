@@ -1,10 +1,11 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, FileText, Bus, BookOpen } from 'lucide-react';
+import { LayoutDashboard, FileText, Bus, BookOpen, Bell } from 'lucide-react';
 
 const BottomNav = () => {
     const navItems = [
         { id: 'dashboard', label: 'Home', icon: <LayoutDashboard size={20} />, path: '/dashboard' },
+        { id: 'notifications', label: 'Alerts', icon: <Bell size={20} />, path: '/notifications' },
         { id: 'notes', label: 'Notes', icon: <FileText size={20} />, path: '/notes' },
         { id: 'bus', label: 'Bus', icon: <Bus size={20} />, path: '/bus' },
         { id: 'syllabus', label: 'Syllabus', icon: <BookOpen size={20} />, path: '/syllabus' },

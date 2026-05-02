@@ -5,7 +5,7 @@ export default async function handler(req, res) {
         return res.status(405).json({ message: 'Method Not Allowed' });
     }
 
-    const { username, password, title, message } = req.body;
+    const { username, password, title, message, link, linkText } = req.body;
 
     if (!process.env.FIREBASE_SERVICE_ACCOUNT || process.env.FIREBASE_SERVICE_ACCOUNT === 'undefined') {
         return res.status(500).json({ message: 'Server Configuration Error: FIREBASE_SERVICE_ACCOUNT is missing or invalid in .env.local' });
@@ -48,6 +48,8 @@ export default async function handler(req, res) {
         await db.collection('announcements').add({
             title: title,
             text: message,
+            link: link || '',
+            linkText: linkText || '',
             timestamp: admin.firestore.FieldValue.serverTimestamp()
         });
 
@@ -68,6 +70,8 @@ export default async function handler(req, res) {
                 data: {
                     title: title,
                     body: message,
+                    link: link || '',
+                    linkText: linkText || '',
                 },
                 tokens: tokens,
             };

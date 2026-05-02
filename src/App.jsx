@@ -12,6 +12,7 @@ import AdditionalLinks from './components/tabs/AdditionalLinks';
 import ContactUs from './components/tabs/ContactUs';
 import Notes from './components/tabs/Notes';
 import Admin from './components/tabs/Admin';
+import Notifications from './components/tabs/Notifications';
 import BottomNav from './components/BottomNav';
 import './style.css';
 import InstallHint from './components/InstallHint';
@@ -109,6 +110,7 @@ function App() {
           <button className="mobile-tab-btn" onClick={() => handleTabChange('hostels')}>Hostels</button>
           <button className="mobile-tab-btn" onClick={() => handleTabChange('notes')}>Notes</button>
           <button className="mobile-tab-btn" onClick={() => handleTabChange('qrcodes')}>Additional Links</button>
+          <button className="mobile-tab-btn" onClick={() => handleTabChange('notifications')}>Notifications</button>
           <button className="mobile-tab-btn" onClick={() => handleTabChange('contact')}>Contact Us</button>
         </div>
       </div>
@@ -125,6 +127,7 @@ function App() {
           <Route path="/contact" element={<div className="container py-16"><ContactUs /></div>} />
           <Route path="/notes" element={<div className="container py-16"><Notes /></div>} />
           <Route path="/adminkuttan" element={<div className="container py-16"><Admin /></div>} />
+          <Route path="/notifications" element={<div className="container py-16"><Notifications /></div>} />
           {/* Fallback route */}
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>

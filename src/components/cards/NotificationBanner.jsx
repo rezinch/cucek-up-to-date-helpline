@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { collection, query, orderBy, limit, onSnapshot } from 'firebase/firestore';
+import { useNavigate } from 'react-router-dom';
 import { db } from '../../firebase';
+import { ExternalLink } from 'lucide-react';
 
 const formatRelativeTime = (timestamp) => {
     if (!timestamp) return '';
@@ -19,6 +21,7 @@ const formatRelativeTime = (timestamp) => {
 };
 
 export default function NotificationBanner() {
+    const navigate = useNavigate();
     const [announcements, setAnnouncements] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -36,15 +39,28 @@ export default function NotificationBanner() {
     }, []);
 
     return (
-        <div className="bento-card col-span-4" style={{
-            background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(139, 92, 246, 0.12) 100%)',
-            border: '1px solid rgba(139, 92, 246, 0.25)',
-            padding: '1.25rem 1.5rem',
-            boxShadow: '0 8px 32px rgba(139, 92, 246, 0.05)',
-            position: 'relative',
-            overflow: 'hidden',
-            backdropFilter: 'blur(10px)',
-        }}>
+        <div className="bento-card col-span-4" 
+            onClick={() => navigate('/notifications')}
+            style={{
+                background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(139, 92, 246, 0.12) 100%)',
+                border: '1px solid rgba(139, 92, 246, 0.25)',
+                padding: '1.25rem 1.5rem',
+                boxShadow: '0 8px 32px rgba(139, 92, 246, 0.05)',
+                position: 'relative',
+                overflow: 'hidden',
+                backdropFilter: 'blur(10px)',
+                cursor: 'pointer',
+                transition: 'transform 0.2s ease, border-color 0.2s ease',
+            }}
+            onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'scale(1.01)';
+                e.currentTarget.style.borderColor = 'rgba(139, 92, 246, 0.4)';
+            }}
+            onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'scale(1)';
+                e.currentTarget.style.borderColor = 'rgba(139, 92, 246, 0.25)';
+            }}
+        >
             {/* Ambient glow */}
             <div style={{
                 position: 'absolute',
@@ -180,20 +196,38 @@ export default function NotificationBanner() {
                                         {formatRelativeTime(item.timestamp)}
                                     </span>
                                 </div>
-                                {item.text && (
-                                    <p style={{
-                                        margin: '0.15rem 0 0',
-                                        fontSize: '0.82rem',
-                                        color: 'var(--color-text-primary)',
-                                        lineHeight: '1.4',
-                                        display: '-webkit-box',
-                                        WebkitLineClamp: 2,
-                                        WebkitBoxOrient: 'vertical',
-                                        overflow: 'hidden',
-                                    }}>
-                                        {item.text}
-                                    </p>
-                                )}
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: '0.5rem' }}>
+                                    <div style={{ flex: 1 }}>
+                                        {item.text && (
+                                            <p style={{
+                                                margin: '0.15rem 0 0',
+                                                fontSize: '0.82rem',
+                                                color: 'var(--color-text-primary)',
+                                                lineHeight: '1.4',
+                                                display: '-webkit-box',
+                                                WebkitLineClamp: 2,
+                                                WebkitBoxOrient: 'vertical',
+                                                overflow: 'hidden',
+                                            }}>
+                                                {item.text}
+                                            </p>
+                                        )}
+                                    </div>
+                                    {item.link && (
+                                        <div style={{
+                                            color: '#A78BFA',
+                                            padding: '4px',
+                                            borderRadius: '6px',
+                                            background: 'rgba(139, 92, 246, 0.1)',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            marginBottom: '2px'
+                                        }}>
+                                            <ExternalLink size={14} />
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     ))

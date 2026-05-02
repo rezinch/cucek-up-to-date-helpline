@@ -464,6 +464,8 @@ function DeleteSection({ creds, showToast }) {
 function AddSection({ creds, showToast }) {
   const [title, setTitle] = useState('');
   const [message, setMessage] = useState('');
+  const [link, setLink] = useState('');
+  const [linkText, setLinkText] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -473,13 +475,15 @@ function AddSection({ creds, showToast }) {
       const res = await fetch('/api/send-notification', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: creds.username, password: creds.password, title, message }),
+        body: JSON.stringify({ username: creds.username, password: creds.password, title, message, link, linkText }),
       });
       const data = await res.json();
       if (res.ok) {
         showToast({ type: 'success', text: `Sent to ${data.stats?.tokensFound || 0} device(s)!` });
         setTitle('');
         setMessage('');
+        setLink('');
+        setLinkText('');
       } else {
         showToast({ type: 'error', text: data.message || data.error || 'Failed to send.' });
       }
@@ -535,6 +539,34 @@ function AddSection({ creds, showToast }) {
             style={{ ...inputStyle, resize: 'vertical', lineHeight: '1.6', minHeight: '100px' }}
           />
         </div>
+        
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          <label htmlFor="notif-link" style={{ fontSize: '0.8rem', fontWeight: '600', color: 'var(--color-text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            Optional Link URL
+          </label>
+          <input
+            id="notif-link"
+            type="url"
+            value={link}
+            onChange={e => setLink(e.target.value)}
+            placeholder="e.g. https://google.com"
+            style={inputStyle}
+          />
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          <label htmlFor="notif-link-text" style={{ fontSize: '0.8rem', fontWeight: '600', color: 'var(--color-text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            Link Text (if URL provided)
+          </label>
+          <input
+            id="notif-link-text"
+            type="text"
+            value={linkText}
+            onChange={e => setLinkText(e.target.value)}
+            placeholder="e.g. Register Now"
+            style={inputStyle}
+          />
+        </div>
 
         {/* Preview */}
         {(title || message) && (
@@ -553,6 +585,11 @@ function AddSection({ creds, showToast }) {
             <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>
               {message || 'Message body…'}
             </p>
+            {link && (
+              <p style={{ margin: '0.5rem 0 0', fontSize: '0.75rem', color: '#A78BFA', fontWeight: '600', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                🔗 {linkText || 'Link'}: {link}
+              </p>
+            )}
           </div>
         )}
 
