@@ -11,7 +11,7 @@ function Header({ activeTab, setActiveTab, isDarkMode, toggleTheme, onMobileMenu
     );
 
     const tabs = [
-        { id: 'dashboard', label: 'Dashboard' },
+        /*{ id: 'dashboard', label: 'Dashboard' },*/
         { id: 'notes', label: 'Notes & Prev Qns' },
         { id: 'bus', label: 'Bus Timings' },
         { id: 'syllabus', label: 'Syllabus' },
