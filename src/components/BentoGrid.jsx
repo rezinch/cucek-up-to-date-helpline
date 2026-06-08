@@ -8,6 +8,24 @@ export default function BentoGrid({ setActiveTab }) {
         <div className="container" style={{ paddingTop: '1.5rem' }}>
             <div className="bento-grid">
                 <NotificationBanner />
+
+                {/* FIFA Challenge Card */}
+                {/*  
+                <div
+                    className="bento-card col-span-4"
+                    style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', cursor: 'pointer', padding: '1.5rem', background: 'linear-gradient(135deg, rgba(16,185,129,0.1), rgba(6,78,59,0.2))', border: '1px solid rgba(16,185,129,0.3)' }}
+                    onClick={() => setActiveTab('fifachallenge')}
+                >
+                    <div style={{ background: 'rgba(16,185,129,0.2)', color: '#10B981', padding: '1rem', borderRadius: '50%', marginRight: '1.5rem' }}>
+                        <span style={{ fontSize: '1.5rem' }}>⚽</span>
+                    </div>
+                    <div>
+                        <h3 className="card-title" style={{ fontSize: '1.25rem', color: '#10B981', marginBottom: '0.25rem' }}>FIFA Challenge</h3>
+                        <p className="card-desc" style={{ margin: 0 }}>Predict match scores & win the leaderboard!</p>
+                    </div>
+                </div>
+
+*/}
                 <LiveBusCard setActiveTab={setActiveTab} />
 
 

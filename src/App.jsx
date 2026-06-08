@@ -13,6 +13,7 @@ import ContactUs from './components/tabs/ContactUs';
 import Notes from './components/tabs/Notes';
 import Admin from './components/tabs/Admin';
 import Notifications from './components/tabs/Notifications';
+import FifaChallenge from './components/tabs/FifaChallenge';
 import BottomNav from './components/BottomNav';
 import './style.css';
 import InstallHint from './components/InstallHint';
@@ -111,6 +112,7 @@ function App() {
           <button className="mobile-tab-btn" onClick={() => handleTabChange('notes')}>Notes</button>
           <button className="mobile-tab-btn" onClick={() => handleTabChange('qrcodes')}>Additional Links</button>
           <button className="mobile-tab-btn" onClick={() => handleTabChange('notifications')}>Notifications</button>
+          <button className="mobile-tab-btn" onClick={() => handleTabChange('fifachallenge')}>FIFA Challenge</button>
           <button className="mobile-tab-btn" onClick={() => handleTabChange('contact')}>Contact Us</button>
         </div>
       </div>
@@ -128,6 +130,7 @@ function App() {
           <Route path="/notes" element={<div className="container py-16"><Notes /></div>} />
           <Route path="/adminkuttan" element={<div className="container py-16"><Admin /></div>} />
           <Route path="/notifications" element={<div className="container py-16"><Notifications /></div>} />
+          <Route path="/fifachallenge" element={<div className="container py-16"><FifaChallenge /></div>} />
           {/* Fallback route */}
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>

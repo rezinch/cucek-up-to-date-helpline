@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { collection, getDocs, query, orderBy, getCountFromServer } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy, getCountFromServer, addDoc, updateDoc, doc, where, deleteDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
@@ -620,9 +620,256 @@ function AddSection({ creds, showToast }) {
   );
 }
 
+// ─── FIFA Admin Section ──────────────────────────────────────────────────────────
+function FifaAdminSection({ showToast }) {
+  const [teamA, setTeamA] = useState('');
+  const [teamB, setTeamB] = useState('');
+  const [matchDate, setMatchDate] = useState('');
+  const [matchType, setMatchType] = useState('normal'); // 'normal', 'semi_final', 'final'
+  const [matches, setMatches] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const fetchMatches = useCallback(async () => {
+    try {
+      const q = query(collection(db, 'fifa_matches'), orderBy('matchDate', 'asc'));
+      const snapshot = await getDocs(q);
+      setMatches(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    } catch (e) {
+      console.error(e);
+    }
+  }, []);
+
+  useEffect(() => { fetchMatches(); }, [fetchMatches]);
+
+  const handleAddMatch = async (e) => {
+    e.preventDefault();
+    if (!teamA || !teamB || !matchDate) return;
+    setLoading(true);
+    try {
+      await addDoc(collection(db, 'fifa_matches'), {
+        teamA, teamB, matchDate: new Date(matchDate), status: 'upcoming', matchType
+      });
+      showToast({ type: 'success', text: 'Match added!' });
+      setTeamA(''); setTeamB(''); setMatchDate(''); setMatchType('normal');
+      fetchMatches();
+    } catch {
+      showToast({ type: 'error', text: 'Failed to add match.' });
+    } finally { setLoading(false); }
+  };
+
+  const handleCompleteMatch = async (matchId, tA, tB, mType = 'normal') => {
+    const sAInput = document.getElementById(`adminScoreA-${matchId}`).value;
+    const sBInput = document.getElementById(`adminScoreB-${matchId}`).value;
+
+    if (!sAInput || !sBInput) {
+      showToast({ type: 'error', text: 'Please enter both scores.' });
+      return;
+    }
+
+    const actScoreA = parseInt(sAInput);
+    const actScoreB = parseInt(sBInput);
+    let actWinner = 'Draw';
+    if (actScoreA > actScoreB) actWinner = tA;
+    if (actScoreB > actScoreA) actWinner = tB;
+
+    let pointsToAward = 1;
+    if (mType === 'semi_final') pointsToAward = 2;
+    if (mType === 'final') pointsToAward = 4;
+
+    try {
+      // 1. Update match
+      await updateDoc(doc(db, 'fifa_matches', matchId), {
+        status: 'completed',
+        actualScoreA: actScoreA,
+        actualScoreB: actScoreB,
+        actualWinner: actWinner
+      });
+
+      // 2. Fetch predictions
+      const pq = query(collection(db, 'fifa_predictions'), where('matchId', '==', matchId));
+      const pSnap = await getDocs(pq);
+      
+      let correctUsers = [];
+      pSnap.forEach(d => {
+        const p = d.data();
+        if (p.predictedScoreA === actScoreA && p.predictedScoreB === actScoreB && p.predictedWinner === actWinner) {
+          correctUsers.push(p.userId);
+        }
+      });
+
+      // 3. Update points
+      for (const uid of correctUsers) {
+        const uq = query(collection(db, 'fifa_users'), where('uid', '==', uid));
+        const uSnap = await getDocs(uq);
+        if (!uSnap.empty) {
+          const userDoc = uSnap.docs[0];
+          await updateDoc(doc(db, 'fifa_users', userDoc.id), {
+            points: (userDoc.data().points || 0) + pointsToAward
+          });
+        }
+      }
+
+      showToast({ type: 'success', text: `Match completed. ${correctUsers.length} user(s) awarded ${pointsToAward} point(s).` });
+      fetchMatches();
+    } catch (e) {
+      console.error(e);
+      showToast({ type: 'error', text: 'Error updating match' });
+    }
+  };
+
+  const handleDeleteMatch = async (m) => {
+    if (!window.confirm('Are you sure you want to delete this match? This will also withdraw points from users who predicted it correctly.')) return;
+    try {
+      // Fetch all predictions for this match
+      const pq = query(collection(db, 'fifa_predictions'), where('matchId', '==', m.id));
+      const pSnap = await getDocs(pq);
+      
+      let pointsToWithdraw = 1;
+      if (m.matchType === 'semi_final') pointsToWithdraw = 2;
+      if (m.matchType === 'final') pointsToWithdraw = 4;
+
+      for (const d of pSnap.docs) {
+        const p = d.data();
+        
+        // If the match was completed, check if this prediction was correct and withdraw points
+        if (m.status === 'completed') {
+          if (p.predictedScoreA === m.actualScoreA && p.predictedScoreB === m.actualScoreB && p.predictedWinner === m.actualWinner) {
+            const uq = query(collection(db, 'fifa_users'), where('uid', '==', p.userId));
+            const uSnap = await getDocs(uq);
+            if (!uSnap.empty) {
+              const userDoc = uSnap.docs[0];
+              const currentPoints = userDoc.data().points || 0;
+              await updateDoc(doc(db, 'fifa_users', userDoc.id), {
+                points: Math.max(0, currentPoints - pointsToWithdraw)
+              });
+            }
+          }
+        }
+        
+        // Delete the prediction document to keep database clean
+        await deleteDoc(doc(db, 'fifa_predictions', d.id));
+      }
+
+      // Delete the match itself
+      await deleteDoc(doc(db, 'fifa_matches', m.id));
+      
+      showToast({ type: 'success', text: 'Match deleted successfully.' });
+      fetchMatches();
+    } catch (e) {
+      console.error("Delete match error:", e);
+      showToast({ type: 'error', text: 'Failed to delete match.' });
+    }
+  };
+
+  return (
+    <div className="bento-card" style={{ padding: '1.75rem', background: 'var(--glass-bg)' }}>
+      <h2 style={{ fontSize: '1.25rem', color: 'var(--color-text-primary)', marginBottom: '1rem' }}>⚽ FIFA Matches Management</h2>
+      <form onSubmit={handleAddMatch} style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
+        <input type="text" placeholder="Team A" value={teamA} onChange={e => setTeamA(e.target.value)} style={{...inputStyle, flex: 1, minWidth: '100px'}} required />
+        <span style={{alignSelf: 'center'}}>vs</span>
+        <input type="text" placeholder="Team B" value={teamB} onChange={e => setTeamB(e.target.value)} style={{...inputStyle, flex: 1, minWidth: '100px'}} required />
+        <input type="datetime-local" value={matchDate} onChange={e => setMatchDate(e.target.value)} style={{...inputStyle, flex: 1, minWidth: '150px'}} required />
+        <select value={matchType} onChange={e => setMatchType(e.target.value)} style={{...inputStyle, flex: 1, minWidth: '130px'}} required>
+          <option value="normal" style={{background: 'var(--color-bg-primary)', color: 'var(--color-text-primary)'}}>Normal Match (1pt)</option>
+          <option value="semi_final" style={{background: 'var(--color-bg-primary)', color: 'var(--color-text-primary)'}}>Semi-Final (2pts)</option>
+          <option value="final" style={{background: 'var(--color-bg-primary)', color: 'var(--color-text-primary)'}}>Final (4pts)</option>
+        </select>
+        <button type="submit" disabled={loading} style={{...primaryBtnStyle, flex: '0 0 auto', padding: '0.5rem 1rem'}}>Add Match</button>
+      </form>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+        {matches.map(m => (
+          <div key={m.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', background: 'rgba(255,255,255,0.04)', borderRadius: '12px' }}>
+            <div>
+              <p style={{ margin: '0 0 0.25rem', fontWeight: 'bold' }}>
+                {m.teamA} vs {m.teamB}
+                {m.matchType && m.matchType !== 'normal' && (
+                  <span style={{ marginLeft: '0.5rem', padding: '0.1rem 0.4rem', borderRadius: '4px', fontSize: '0.7rem', fontWeight: 'bold', background: m.matchType === 'final' ? 'rgba(245,158,11,0.2)' : 'rgba(96,165,250,0.2)', color: m.matchType === 'final' ? '#F59E0B' : '#60A5FA' }}>
+                    {m.matchType === 'final' ? 'Final' : 'Semi-Final'}
+                  </span>
+                )}
+              </p>
+              <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--color-text-secondary)' }}>{m.matchDate?.toDate ? m.matchDate.toDate().toLocaleString() : new Date(m.matchDate).toLocaleString()} - {m.status}</p>
+            </div>
+            {m.status === 'upcoming' && (
+              <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                <input type="number" id={`adminScoreA-${m.id}`} placeholder={`${m.teamA}`} style={{...inputStyle, width: '70px', padding: '0.4rem'}} min="0" />
+                <input type="number" id={`adminScoreB-${m.id}`} placeholder={`${m.teamB}`} style={{...inputStyle, width: '70px', padding: '0.4rem'}} min="0" />
+                <button onClick={() => handleCompleteMatch(m.id, m.teamA, m.teamB, m.matchType)} style={dangerBtnStyle}>Mark Complete</button>
+                <button onClick={() => handleDeleteMatch(m)} style={{...dangerBtnStyle, padding: '0.4rem', display: 'flex', alignItems: 'center'}} title="Delete Match"><IconTrash/></button>
+              </div>
+            )}
+            {m.status === 'completed' && (
+              <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                <span style={{ fontSize: '0.85rem', color: '#10B981', fontWeight: 'bold' }}>{m.actualScoreA} - {m.actualScoreB} ({m.actualWinner})</span>
+                <button onClick={() => handleDeleteMatch(m)} style={{...dangerBtnStyle, padding: '0.4rem', display: 'flex', alignItems: 'center'}} title="Delete Match"><IconTrash/></button>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── FIFA Admin Leaderboard Section ──────────────────────────────────────────
+function FifaLeaderboardAdminSection() {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      setLoading(true);
+      try {
+        const q = query(collection(db, 'fifa_users'), orderBy('points', 'desc'));
+        const snapshot = await getDocs(q);
+        setUsers(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      } catch (e) {
+        console.error("Error fetching admin leaderboard:", e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUsers();
+  }, []);
+
+  return (
+    <div className="bento-card" style={{ padding: '1.75rem', background: 'var(--glass-bg)', marginTop: '2rem' }}>
+      <h2 style={{ fontSize: '1.25rem', color: 'var(--color-text-primary)', marginBottom: '1rem' }}>📋 FIFA Players Data</h2>
+      {loading ? <p style={{ color: 'var(--color-text-secondary)' }}>Loading players...</p> : users.length === 0 ? <p style={{ color: 'var(--color-text-secondary)' }}>No registered users yet.</p> : (
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', color: 'var(--color-text-primary)', textAlign: 'left', minWidth: '600px' }}>
+            <thead>
+              <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+                <th style={{ padding: '0.75rem' }}>Name</th>
+                <th style={{ padding: '0.75rem' }}>Reg ID</th>
+                <th style={{ padding: '0.75rem' }}>Phone</th>
+                <th style={{ padding: '0.75rem' }}>Points</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.map((u, i) => (
+                <tr key={u.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', background: i % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.02)' }}>
+                  <td style={{ padding: '0.75rem' }}>{u.name}</td>
+                  <td style={{ padding: '0.75rem', color: 'var(--color-text-secondary)' }}>{u.studentId || '-'}</td>
+                  <td style={{ padding: '0.75rem', color: 'var(--color-text-secondary)' }}>{u.phone || '-'}</td>
+                  <td style={{ padding: '0.75rem', fontWeight: 'bold', color: '#60A5FA' }}>{u.points}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Main Admin Component ─────────────────────────────────────────────────────
 export default function Admin() {
-  const [creds, setCreds] = useState(null);
+  const [creds, setCreds] = useState(() => {
+    const saved = localStorage.getItem('adminCreds');
+    return saved ? JSON.parse(saved) : null;
+  });
   const [toast, setToast] = useState(null);
   const [deviceCount, setDeviceCount] = useState(null);
 
@@ -671,7 +918,10 @@ export default function Admin() {
       <Toast toast={toast} onDismiss={() => setToast(null)} />
 
       {!creds ? (
-        <LoginScreen onLogin={setCreds} />
+        <LoginScreen onLogin={(c) => {
+          setCreds(c);
+          localStorage.setItem('adminCreds', JSON.stringify(c));
+        }} />
       ) : (
         <div style={{ animation: 'fadeInUp 0.4s cubic-bezier(0.4,0,0.2,1)' }}>
           {/* Top bar */}
@@ -705,7 +955,10 @@ export default function Admin() {
             </div>
             <button
               id="admin-logout-btn"
-              onClick={() => setCreds(null)}
+              onClick={() => {
+                setCreds(null);
+                localStorage.removeItem('adminCreds');
+              }}
               style={{
                 ...dangerBtnStyle,
                 background: 'rgba(255,255,255,0.05)',
@@ -719,7 +972,6 @@ export default function Admin() {
             </button>
           </div>
 
-          {/* Two-section layout */}
           <div style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 480px), 1fr))',
@@ -728,6 +980,11 @@ export default function Admin() {
           }}>
             <DeleteSection creds={creds} showToast={showToast} />
             <AddSection creds={creds} showToast={showToast} />
+          </div>
+          
+          <div style={{ marginTop: '1.5rem' }}>
+            <FifaAdminSection showToast={showToast} />
+            <FifaLeaderboardAdminSection />
           </div>
         </div>
       )}

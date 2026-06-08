@@ -5,7 +5,11 @@
       "destination": "/api/$1"
     },
     {
-      "source": "/(dashboard|helpdesk|bus|syllabus|hostels|qrcodes|contact|notes|adminkuttan)",
+      "source": "/__/auth/action",
+      "destination": "https://cucek-up-to-date.firebaseapp.com/__/auth/action"
+    },
+    {
+      "source": "/(dashboard|helpdesk|bus|syllabus|hostels|qrcodes|contact|notes|adminkuttan|fifachallenge)",
       "destination": "/index.html"
     }
   ]
