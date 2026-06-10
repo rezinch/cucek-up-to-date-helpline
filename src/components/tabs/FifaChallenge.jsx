@@ -246,6 +246,18 @@ export default function FifaChallenge() {
           <p style={{ textAlign: 'center', marginTop: '1rem', fontSize: '0.875rem', color: 'var(--color-text-secondary)', cursor: 'pointer' }} onClick={() => { setIsForgotPassword(false); setAuthError(''); }}>
             Back to Sign In
           </p>
+          <div style={{
+            marginTop: '1.5rem',
+            paddingTop: '1rem',
+            borderTop: '1px solid var(--glass-border)',
+            textAlign: 'center',
+            fontSize: '0.8rem',
+            color: 'var(--color-text-secondary)',
+            lineHeight: '1.5'
+          }}>
+            📞 For any issues or complaints, contact:<br/>
+            <strong style={{ color: 'var(--color-text-primary)' }}>Rezin:</strong> <a href="tel:8086982257" style={{ color: '#60A5FA' }}>8086982257</a> | <strong style={{ color: 'var(--color-text-primary)' }}>Eesa:</strong> <a href="tel:9072341909" style={{ color: '#60A5FA' }}>9072341909</a>
+          </div>
         </div>
       );
     }
@@ -371,6 +383,18 @@ export default function FifaChallenge() {
         <p style={{ textAlign: 'center', marginTop: '1rem', fontSize: '0.875rem', color: 'var(--color-text-secondary)', cursor: 'pointer' }} onClick={() => { setIsSignUp(!isSignUp); setIsForgotPassword(false); setAuthError(''); }}>
           {isSignUp ? 'Already have an account? Sign In' : "Don't have an account? Sign Up"}
         </p>
+        <div style={{
+          marginTop: '1.5rem',
+          paddingTop: '1rem',
+          borderTop: '1px solid var(--glass-border)',
+          textAlign: 'center',
+          fontSize: '0.8rem',
+          color: 'var(--color-text-secondary)',
+          lineHeight: '1.5'
+        }}>
+          📞 For any issues or complaints, contact:<br/>
+          <strong style={{ color: 'var(--color-text-primary)' }}>Rezin:</strong> <a href="tel:8086982257" style={{ color: '#60A5FA' }}>8086982257</a> | <strong style={{ color: 'var(--color-text-primary)' }}>Eesa:</strong> <a href="tel:9072341909" style={{ color: '#60A5FA' }}>9072341909</a>
+        </div>
       </div>
     );
   }
@@ -418,9 +442,9 @@ export default function FifaChallenge() {
           {/* Matches Section */}
           <div>
             <h2 style={{ fontSize: '1.25rem', marginBottom: '1rem', color: 'var(--color-text-primary)' }}>Upcoming Matches</h2>
-            {loadingData ? <p>Loading matches...</p> : matches.length === 0 ? <p style={{ color: 'var(--color-text-secondary)' }}>No matches available right now.</p> : (
+            {loadingData ? <p>Loading matches...</p> : matches.filter(m => m.status !== 'completed' && m.visible !== false).length === 0 ? <p style={{ color: 'var(--color-text-secondary)' }}>No matches available right now.</p> : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                {matches.filter(m => m.status !== 'completed').map(match => (
+                {matches.filter(m => m.status !== 'completed' && m.visible !== false).map(match => (
                   <div key={match.id} className="bento-card" style={{ padding: '1.5rem' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
                       <div style={{ fontSize: '1.1rem', fontWeight: 'bold', color: 'var(--color-text-primary)' }}>
@@ -539,6 +563,18 @@ export default function FifaChallenge() {
               </div>
             </div>
 
+          </div>
+          <div style={{
+            marginTop: '2rem',
+            paddingTop: '1.5rem',
+            borderTop: '1px solid var(--glass-border)',
+            textAlign: 'center',
+            fontSize: '0.85rem',
+            color: 'var(--color-text-secondary)',
+            width: '100%',
+            gridColumn: '1 / -1'
+          }}>
+            📞 For any issues or complaints, contact: <strong style={{ color: 'var(--color-text-primary)' }}>Rezin:</strong> <a href="tel:8086982257" style={{ color: '#60A5FA' }}>8086982257</a> | <strong style={{ color: 'var(--color-text-primary)' }}>Eesa:</strong> <a href="tel:9072341909" style={{ color: '#60A5FA' }}>9072341909</a>
           </div>
         </div>
       )}

@@ -647,7 +647,7 @@ function FifaAdminSection({ showToast }) {
     setLoading(true);
     try {
       await addDoc(collection(db, 'fifa_matches'), {
-        teamA, teamB, matchDate: new Date(matchDate), status: 'upcoming', matchType
+        teamA, teamB, matchDate: new Date(matchDate), status: 'upcoming', matchType, visible: true
       });
       showToast({ type: 'success', text: 'Match added!' });
       setTeamA(''); setTeamB(''); setMatchDate(''); setMatchType('normal');
@@ -780,16 +780,37 @@ function FifaAdminSection({ showToast }) {
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
         {matches.map(m => (
           <div key={m.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', background: 'rgba(255,255,255,0.04)', borderRadius: '12px' }}>
-            <div>
-              <p style={{ margin: '0 0 0.25rem', fontWeight: 'bold' }}>
-                {m.teamA} vs {m.teamB}
-                {m.matchType && m.matchType !== 'normal' && (
-                  <span style={{ marginLeft: '0.5rem', padding: '0.1rem 0.4rem', borderRadius: '4px', fontSize: '0.7rem', fontWeight: 'bold', background: m.matchType === 'final' ? 'rgba(245,158,11,0.2)' : 'rgba(96,165,250,0.2)', color: m.matchType === 'final' ? '#F59E0B' : '#60A5FA' }}>
-                    {m.matchType === 'final' ? 'Final' : 'Semi-Final'}
-                  </span>
-                )}
-              </p>
-              <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--color-text-secondary)' }}>{m.matchDate?.toDate ? m.matchDate.toDate().toLocaleString() : new Date(m.matchDate).toLocaleString()} - {m.status}</p>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flex: 1, minWidth: 0 }}>
+              <div>
+                <p style={{ margin: '0 0 0.25rem', fontWeight: 'bold' }}>
+                  {m.teamA} vs {m.teamB}
+                  {m.matchType && m.matchType !== 'normal' && (
+                    <span style={{ marginLeft: '0.5rem', padding: '0.1rem 0.4rem', borderRadius: '4px', fontSize: '0.7rem', fontWeight: 'bold', background: m.matchType === 'final' ? 'rgba(245,158,11,0.2)' : 'rgba(96,165,250,0.2)', color: m.matchType === 'final' ? '#F59E0B' : '#60A5FA' }}>
+                      {m.matchType === 'final' ? 'Final' : 'Semi-Final'}
+                    </span>
+                  )}
+                </p>
+                <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--color-text-secondary)' }}>{m.matchDate?.toDate ? m.matchDate.toDate().toLocaleString() : new Date(m.matchDate).toLocaleString()} - {m.status}</p>
+              </div>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer', userSelect: 'none', fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>
+                <input
+                  type="checkbox"
+                  checked={m.visible !== false}
+                  onChange={async (e) => {
+                    try {
+                      await updateDoc(doc(db, 'fifa_matches', m.id), {
+                        visible: e.target.checked
+                      });
+                      showToast({ type: 'success', text: 'Visibility updated' });
+                      fetchMatches();
+                    } catch (err) {
+                      showToast({ type: 'error', text: 'Failed to update visibility' });
+                    }
+                  }}
+                  style={{ cursor: 'pointer' }}
+                />
+                Visible
+              </label>
             </div>
             {m.status === 'upcoming' && (
               <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
