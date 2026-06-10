@@ -842,7 +842,8 @@ function FifaLeaderboardAdminSection() {
             <thead>
               <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
                 <th style={{ padding: '0.75rem' }}>Name</th>
-                <th style={{ padding: '0.75rem' }}>Reg ID</th>
+                <th style={{ padding: '0.75rem' }}>Branch</th>
+                <th style={{ padding: '0.75rem' }}>Sem</th>
                 <th style={{ padding: '0.75rem' }}>Phone</th>
                 <th style={{ padding: '0.75rem' }}>Points</th>
               </tr>
@@ -851,7 +852,8 @@ function FifaLeaderboardAdminSection() {
               {users.map((u, i) => (
                 <tr key={u.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', background: i % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.02)' }}>
                   <td style={{ padding: '0.75rem' }}>{u.name}</td>
-                  <td style={{ padding: '0.75rem', color: 'var(--color-text-secondary)' }}>{u.studentId || '-'}</td>
+                  <td style={{ padding: '0.75rem', color: 'var(--color-text-secondary)' }}>{u.branch || '-'}</td>
+                  <td style={{ padding: '0.75rem', color: 'var(--color-text-secondary)' }}>{u.sem || '-'}</td>
                   <td style={{ padding: '0.75rem', color: 'var(--color-text-secondary)' }}>{u.phone || '-'}</td>
                   <td style={{ padding: '0.75rem', fontWeight: 'bold', color: '#60A5FA' }}>{u.points}</td>
                 </tr>

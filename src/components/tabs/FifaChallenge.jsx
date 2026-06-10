@@ -9,7 +9,8 @@ export default function FifaChallenge() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
-  const [studentId, setStudentId] = useState('');
+  const [branch, setBranch] = useState('');
+  const [sem, setSem] = useState('');
   const [phone, setPhone] = useState('');
   const [isSignUp, setIsSignUp] = useState(false);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
@@ -86,8 +87,8 @@ export default function FifaChallenge() {
     setAuthError('');
     try {
       if (isSignUp) {
-        if (!name.trim() || !studentId.trim()) {
-          setAuthError("Please enter your name and Student ID.");
+        if (!name.trim() || !branch.trim() || !sem.trim()) {
+          setAuthError("Please enter your name, branch, and semester.");
           return;
         }
         const userCreds = await createUserWithEmailAndPassword(auth, email, password);
@@ -97,7 +98,8 @@ export default function FifaChallenge() {
         await addDoc(collection(db, 'fifa_users'), {
           uid: userCreds.user.uid,
           name: name,
-          studentId: studentId,
+          branch: branch,
+          sem: sem,
           phone: phone,
           email: email,
           points: 0
@@ -119,7 +121,8 @@ export default function FifaChallenge() {
     setEmail('');
     setPassword('');
     setName('');
-    setStudentId('');
+    setBranch('');
+    setSem('');
     setPhone('');
   };
 
@@ -256,6 +259,18 @@ export default function FifaChallenge() {
         <form onSubmit={handleAuth} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           {isSignUp && (
             <>
+              <div style={{
+                background: 'rgba(239, 68, 68, 0.1)',
+                border: '1px solid rgba(239, 68, 68, 0.2)',
+                borderRadius: '8px',
+                padding: '0.75rem',
+                fontSize: '0.8rem',
+                color: '#FCA5A5',
+                lineHeight: '1.4',
+                marginBottom: '0.5rem'
+              }}>
+                ⚠️ <strong>Notice:</strong> Participants will be verified along with their branch and semester. Multiple accounts are strictly prohibited.
+              </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                 <label style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)', textTransform: 'uppercase', fontWeight: 'bold' }}>Your Name</label>
                 <input
@@ -269,16 +284,36 @@ export default function FifaChallenge() {
                 />
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                <label style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)', textTransform: 'uppercase', fontWeight: 'bold' }}>Student ID / Reg No</label>
+                <label style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)', textTransform: 'uppercase', fontWeight: 'bold' }}>Branch</label>
                 <input
                   type="text"
-                  placeholder="e.g. KSU2024CS001"
-                  value={studentId}
-                  onChange={e => setStudentId(e.target.value)}
+                  placeholder="e.g. CS, EC, ME"
+                  value={branch}
+                  onChange={e => setBranch(e.target.value)}
                   required
                   className="form-input"
                   style={inputStyle}
                 />
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <label style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)', textTransform: 'uppercase', fontWeight: 'bold' }}>Semester</label>
+                <select
+                  value={sem}
+                  onChange={e => setSem(e.target.value)}
+                  required
+                  className="form-input"
+                  style={inputStyle}
+                >
+                  <option value="" disabled style={{background: 'var(--color-bg-primary)', color: 'var(--color-text-primary)'}}>Select Semester</option>
+                  <option value="S1" style={{background: 'var(--color-bg-primary)', color: 'var(--color-text-primary)'}}>S1</option>
+                  <option value="S2" style={{background: 'var(--color-bg-primary)', color: 'var(--color-text-primary)'}}>S2</option>
+                  <option value="S3" style={{background: 'var(--color-bg-primary)', color: 'var(--color-text-primary)'}}>S3</option>
+                  <option value="S4" style={{background: 'var(--color-bg-primary)', color: 'var(--color-text-primary)'}}>S4</option>
+                  <option value="S5" style={{background: 'var(--color-bg-primary)', color: 'var(--color-text-primary)'}}>S5</option>
+                  <option value="S6" style={{background: 'var(--color-bg-primary)', color: 'var(--color-text-primary)'}}>S6</option>
+                  <option value="S7" style={{background: 'var(--color-bg-primary)', color: 'var(--color-text-primary)'}}>S7</option>
+                  <option value="S8" style={{background: 'var(--color-bg-primary)', color: 'var(--color-text-primary)'}}>S8</option>
+                </select>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                 <label style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)', textTransform: 'uppercase', fontWeight: 'bold' }}>Phone Number</label>
@@ -446,7 +481,14 @@ export default function FifaChallenge() {
                         <span style={{ fontWeight: 'bold', color: index === 0 ? '#F59E0B' : index === 1 ? '#9CA3AF' : index === 2 ? '#B45309' : 'var(--color-text-secondary)' }}>
                           #{index + 1}
                         </span>
-                        <span style={{ color: 'var(--color-text-primary)' }}>{userObj.name}</span>
+                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                          <span style={{ color: 'var(--color-text-primary)', fontWeight: '500' }}>{userObj.name}</span>
+                          {(userObj.branch || userObj.sem) && (
+                            <span style={{ color: 'var(--color-text-secondary)', fontSize: '0.75rem' }}>
+                              {userObj.branch || ''} {userObj.branch && userObj.sem ? '•' : ''} {userObj.sem || ''}
+                            </span>
+                          )}
+                        </div>
                       </div>
                       <span style={{ fontWeight: 'bold', color: '#60A5FA' }}>{userObj.points} pts</span>
                     </div>
@@ -485,6 +527,13 @@ export default function FifaChallenge() {
                   <h3 style={{ fontSize: '0.95rem', color: 'var(--color-text-primary)', margin: '0 0 0.25rem 0', fontWeight: 'bold' }}>⏱️ Lockout Deadlines</h3>
                   <p style={{ margin: 0, color: 'var(--color-text-secondary)', fontSize: '0.825rem', lineHeight: '1.5' }}>
                     Predictions lock instantly once a match starts. Late submissions are rejected by the database.
+                  </p>
+                </div>
+
+                <div style={{ borderLeft: '3px solid #EF4444', paddingLeft: '0.75rem' }}>
+                  <h3 style={{ fontSize: '0.95rem', color: 'var(--color-text-primary)', margin: '0 0 0.25rem 0', fontWeight: 'bold' }}>🛡️ Verification & Fair Play</h3>
+                  <p style={{ margin: 0, color: 'var(--color-text-secondary)', fontSize: '0.825rem', lineHeight: '1.5' }}>
+                    Participants will be verified along with their branch and semester. Creation of multiple accounts is strictly prohibited.
                   </p>
                 </div>
               </div>

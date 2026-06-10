@@ -10,7 +10,7 @@ export default function BentoGrid({ setActiveTab }) {
                 <NotificationBanner />
 
                 {/* FIFA Challenge Card */}
-                {/*  
+
                 <div
                     className="bento-card col-span-4"
                     style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', cursor: 'pointer', padding: '1.5rem', background: 'linear-gradient(135deg, rgba(16,185,129,0.1), rgba(6,78,59,0.2))', border: '1px solid rgba(16,185,129,0.3)' }}
@@ -25,7 +25,7 @@ export default function BentoGrid({ setActiveTab }) {
                     </div>
                 </div>
 
-*/}
+
                 <LiveBusCard setActiveTab={setActiveTab} />
 
 
