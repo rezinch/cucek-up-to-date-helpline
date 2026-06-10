@@ -628,6 +628,8 @@ function FifaAdminSection({ showToast }) {
   const [matchType, setMatchType] = useState('normal'); // 'normal', 'semi_final', 'final'
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [showBulk, setShowBulk] = useState(false);
+  const [bulkInput, setBulkInput] = useState('');
 
   const fetchMatches = useCallback(async () => {
     try {
@@ -655,6 +657,76 @@ function FifaAdminSection({ showToast }) {
     } catch {
       showToast({ type: 'error', text: 'Failed to add match.' });
     } finally { setLoading(false); }
+  };
+
+  const handleBulkAdd = async (e) => {
+    e.preventDefault();
+    if (!bulkInput.trim()) return;
+    setLoading(true);
+    let matchesToAdd = [];
+    
+    // Try to parse as JSON first
+    try {
+      const parsed = JSON.parse(bulkInput);
+      if (Array.isArray(parsed)) {
+        matchesToAdd = parsed.map(m => ({
+          teamA: m.teamA || '',
+          teamB: m.teamB || '',
+          matchDate: new Date(m.date || m.matchDate),
+          matchType: m.matchType || 'normal',
+          status: 'upcoming',
+          visible: true
+        }));
+      }
+    } catch (err) {
+      // Parse line-by-line: "Team A vs Team B, YYYY-MM-DDTHH:MM" or similar
+      const lines = bulkInput.split('\n');
+      for (const line of lines) {
+        if (!line.trim()) continue;
+        const parts = line.split(',');
+        if (parts.length >= 2) {
+          const teamsPart = parts[0].trim();
+          const datePart = parts[1].trim();
+          const matchTypePart = parts[2]?.trim() || 'normal';
+          
+          const teamParts = teamsPart.split(/\s+vs\s+/i);
+          if (teamParts.length === 2) {
+            matchesToAdd.push({
+              teamA: teamParts[0].trim(),
+              teamB: teamParts[1].trim(),
+              matchDate: new Date(datePart),
+              matchType: matchTypePart,
+              status: 'upcoming',
+              visible: true
+            });
+          }
+        }
+      }
+    }
+
+    if (matchesToAdd.length === 0) {
+      showToast({ type: 'error', text: 'No valid matches found in input.' });
+      setLoading(false);
+      return;
+    }
+
+    try {
+      let count = 0;
+      for (const match of matchesToAdd) {
+        if (!match.teamA || !match.teamB || isNaN(match.matchDate.getTime())) continue;
+        await addDoc(collection(db, 'fifa_matches'), match);
+        count++;
+      }
+      showToast({ type: 'success', text: `Successfully imported ${count} matches!` });
+      setBulkInput('');
+      setShowBulk(false);
+      fetchMatches();
+    } catch (e) {
+      console.error(e);
+      showToast({ type: 'error', text: 'Error importing matches.' });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleCompleteMatch = async (matchId, tA, tB, mType = 'normal') => {
@@ -763,19 +835,57 @@ function FifaAdminSection({ showToast }) {
 
   return (
     <div className="bento-card" style={{ padding: '1.75rem', background: 'var(--glass-bg)' }}>
-      <h2 style={{ fontSize: '1.25rem', color: 'var(--color-text-primary)', marginBottom: '1rem' }}>⚽ FIFA Matches Management</h2>
-      <form onSubmit={handleAddMatch} style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
-        <input type="text" placeholder="Team A" value={teamA} onChange={e => setTeamA(e.target.value)} style={{...inputStyle, flex: 1, minWidth: '100px'}} required />
-        <span style={{alignSelf: 'center'}}>vs</span>
-        <input type="text" placeholder="Team B" value={teamB} onChange={e => setTeamB(e.target.value)} style={{...inputStyle, flex: 1, minWidth: '100px'}} required />
-        <input type="datetime-local" value={matchDate} onChange={e => setMatchDate(e.target.value)} style={{...inputStyle, flex: 1, minWidth: '150px'}} required />
-        <select value={matchType} onChange={e => setMatchType(e.target.value)} style={{...inputStyle, flex: 1, minWidth: '130px'}} required>
-          <option value="normal" style={{background: '#1a1a1a', color: '#f3f4f6'}}>Normal Match (1pt)</option>
-          <option value="semi_final" style={{background: '#1a1a1a', color: '#f3f4f6'}}>Semi-Final (2pts)</option>
-          <option value="final" style={{background: '#1a1a1a', color: '#f3f4f6'}}>Final (4pts)</option>
-        </select>
-        <button type="submit" disabled={loading} style={{...primaryBtnStyle, flex: '0 0 auto', padding: '0.5rem 1rem'}}>Add Match</button>
-      </form>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+        <h2 style={{ fontSize: '1.25rem', color: 'var(--color-text-primary)', margin: 0 }}>⚽ FIFA Matches Management</h2>
+        <button 
+          type="button"
+          onClick={() => setShowBulk(!showBulk)} 
+          style={{
+            ...dangerBtnStyle,
+            background: 'rgba(96,165,250,0.1)',
+            color: '#60A5FA',
+            border: '1px solid rgba(96,165,250,0.2)',
+            padding: '0.4rem 0.8rem'
+          }}
+        >
+          {showBulk ? 'Add Single Match' : 'Bulk Import Matches'}
+        </button>
+      </div>
+
+      {showBulk ? (
+        <form onSubmit={handleBulkAdd} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.5rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+            <label style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)', fontWeight: 'bold' }}>PASTE FIXTURES LIST (JSON or Comma-Separated)</label>
+            <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--color-text-secondary)' }}>
+              Format: <code>Team A vs Team B, YYYY-MM-DDTHH:MM</code> (one per line) or a JSON array of match objects.
+            </p>
+          </div>
+          <textarea
+            value={bulkInput}
+            onChange={e => setBulkInput(e.target.value)}
+            placeholder={`Mexico vs South Africa, 2026-06-12T00:30\nSouth Korea vs Czechia, 2026-06-12T07:30`}
+            rows="6"
+            style={{ ...inputStyle, fontFamily: 'monospace', resize: 'vertical' }}
+            required
+          />
+          <button type="submit" disabled={loading} style={{ ...primaryBtnStyle, width: 'fit-content', padding: '0.5rem 1rem' }}>
+            {loading ? 'Importing...' : 'Bulk Import Matches'}
+          </button>
+        </form>
+      ) : (
+        <form onSubmit={handleAddMatch} style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
+          <input type="text" placeholder="Team A" value={teamA} onChange={e => setTeamA(e.target.value)} style={{...inputStyle, flex: 1, minWidth: '100px'}} required />
+          <span style={{alignSelf: 'center'}}>vs</span>
+          <input type="text" placeholder="Team B" value={teamB} onChange={e => setTeamB(e.target.value)} style={{...inputStyle, flex: 1, minWidth: '100px'}} required />
+          <input type="datetime-local" value={matchDate} onChange={e => setMatchDate(e.target.value)} style={{...inputStyle, flex: 1, minWidth: '150px'}} required />
+          <select value={matchType} onChange={e => setMatchType(e.target.value)} style={{...inputStyle, flex: 1, minWidth: '130px'}} required>
+            <option value="normal" style={{background: '#1a1a1a', color: '#f3f4f6'}}>Normal Match (1pt)</option>
+            <option value="semi_final" style={{background: '#1a1a1a', color: '#f3f4f6'}}>Semi-Final (2pts)</option>
+            <option value="final" style={{background: '#1a1a1a', color: '#f3f4f6'}}>Final (4pts)</option>
+          </select>
+          <button type="submit" disabled={loading} style={{...primaryBtnStyle, flex: '0 0 auto', padding: '0.5rem 1rem'}}>Add Match</button>
+        </form>
+      )}
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
         {matches.map(m => (
