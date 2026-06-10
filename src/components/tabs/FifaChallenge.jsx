@@ -304,15 +304,15 @@ export default function FifaChallenge() {
                   className="form-input"
                   style={inputStyle}
                 >
-                  <option value="" disabled style={{background: 'var(--color-bg-primary)', color: 'var(--color-text-primary)'}}>Select Semester</option>
-                  <option value="S1" style={{background: 'var(--color-bg-primary)', color: 'var(--color-text-primary)'}}>S1</option>
-                  <option value="S2" style={{background: 'var(--color-bg-primary)', color: 'var(--color-text-primary)'}}>S2</option>
-                  <option value="S3" style={{background: 'var(--color-bg-primary)', color: 'var(--color-text-primary)'}}>S3</option>
-                  <option value="S4" style={{background: 'var(--color-bg-primary)', color: 'var(--color-text-primary)'}}>S4</option>
-                  <option value="S5" style={{background: 'var(--color-bg-primary)', color: 'var(--color-text-primary)'}}>S5</option>
-                  <option value="S6" style={{background: 'var(--color-bg-primary)', color: 'var(--color-text-primary)'}}>S6</option>
-                  <option value="S7" style={{background: 'var(--color-bg-primary)', color: 'var(--color-text-primary)'}}>S7</option>
-                  <option value="S8" style={{background: 'var(--color-bg-primary)', color: 'var(--color-text-primary)'}}>S8</option>
+                  <option value="" disabled style={{background: '#1a1a1a', color: '#f3f4f6'}}>Select Semester</option>
+                  <option value="S1" style={{background: '#1a1a1a', color: '#f3f4f6'}}>S1</option>
+                  <option value="S2" style={{background: '#1a1a1a', color: '#f3f4f6'}}>S2</option>
+                  <option value="S3" style={{background: '#1a1a1a', color: '#f3f4f6'}}>S3</option>
+                  <option value="S4" style={{background: '#1a1a1a', color: '#f3f4f6'}}>S4</option>
+                  <option value="S5" style={{background: '#1a1a1a', color: '#f3f4f6'}}>S5</option>
+                  <option value="S6" style={{background: '#1a1a1a', color: '#f3f4f6'}}>S6</option>
+                  <option value="S7" style={{background: '#1a1a1a', color: '#f3f4f6'}}>S7</option>
+                  <option value="S8" style={{background: '#1a1a1a', color: '#f3f4f6'}}>S8</option>
                 </select>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>

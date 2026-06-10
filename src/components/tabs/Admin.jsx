@@ -770,9 +770,9 @@ function FifaAdminSection({ showToast }) {
         <input type="text" placeholder="Team B" value={teamB} onChange={e => setTeamB(e.target.value)} style={{...inputStyle, flex: 1, minWidth: '100px'}} required />
         <input type="datetime-local" value={matchDate} onChange={e => setMatchDate(e.target.value)} style={{...inputStyle, flex: 1, minWidth: '150px'}} required />
         <select value={matchType} onChange={e => setMatchType(e.target.value)} style={{...inputStyle, flex: 1, minWidth: '130px'}} required>
-          <option value="normal" style={{background: 'var(--color-bg-primary)', color: 'var(--color-text-primary)'}}>Normal Match (1pt)</option>
-          <option value="semi_final" style={{background: 'var(--color-bg-primary)', color: 'var(--color-text-primary)'}}>Semi-Final (2pts)</option>
-          <option value="final" style={{background: 'var(--color-bg-primary)', color: 'var(--color-text-primary)'}}>Final (4pts)</option>
+          <option value="normal" style={{background: '#1a1a1a', color: '#f3f4f6'}}>Normal Match (1pt)</option>
+          <option value="semi_final" style={{background: '#1a1a1a', color: '#f3f4f6'}}>Semi-Final (2pts)</option>
+          <option value="final" style={{background: '#1a1a1a', color: '#f3f4f6'}}>Final (4pts)</option>
         </select>
         <button type="submit" disabled={loading} style={{...primaryBtnStyle, flex: '0 0 auto', padding: '0.5rem 1rem'}}>Add Match</button>
       </form>
