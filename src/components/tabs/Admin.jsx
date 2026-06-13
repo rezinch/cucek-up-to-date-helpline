@@ -675,7 +675,7 @@ function FifaAdminSection({ showToast }) {
           matchDate: new Date(m.date || m.matchDate),
           matchType: m.matchType || 'normal',
           status: 'upcoming',
-          visible: true
+          visible: false
         }));
       }
     } catch (err) {
@@ -697,7 +697,7 @@ function FifaAdminSection({ showToast }) {
               matchDate: new Date(datePart),
               matchType: matchTypePart,
               status: 'upcoming',
-              visible: true
+              visible: false
             });
           }
         }
