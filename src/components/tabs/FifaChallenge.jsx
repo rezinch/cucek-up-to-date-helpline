@@ -414,6 +414,19 @@ export default function FifaChallenge() {
 
   return (
     <div style={{ animation: 'fadeInUp 0.4s ease' }}>
+      <style>{`
+        .fifa-challenge-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 2rem;
+          align-items: start;
+        }
+        @media (min-width: 1024px) {
+          .fifa-challenge-grid {
+            grid-template-columns: 1.2fr 1fr 1fr;
+          }
+        }
+      `}</style>
       {toast && (
         <div style={{
           position: 'fixed', bottom: '20px', right: '20px', zIndex: 9999,
@@ -450,7 +463,7 @@ export default function FifaChallenge() {
           </div>
         </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem', alignItems: 'start' }}>
+        <div className="fifa-challenge-grid">
           
           {/* Matches Section */}
           <div>
@@ -513,78 +526,94 @@ export default function FifaChallenge() {
             )}
           </div>
 
-          {/* Right Column: Leaderboard & Rules Stacked */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+          {/* Rules Section */}
+          <div className="bento-card" style={{ padding: '1.5rem' }}>
+            <h2 style={{ fontSize: '1.2rem', marginBottom: '1rem', color: 'var(--color-text-primary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              📜 Rules & Info
+            </h2>
             
-            {/* Leaderboard Section */}
-            <div className="bento-card" style={{ padding: '1.5rem' }}>
-              <h2 style={{ fontSize: '1.25rem', marginBottom: '1rem', color: 'var(--color-text-primary)' }}>Leaderboard</h2>
-              {leaderboard.length === 0 ? <p style={{ color: 'var(--color-text-secondary)' }}>No points awarded yet.</p> : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                  {leaderboard.map((userObj, index) => (
-                    <div key={userObj.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '0.75rem 1rem', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', alignItems: 'center' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                        <span style={{ fontWeight: 'bold', color: index === 0 ? '#F59E0B' : index === 1 ? '#9CA3AF' : index === 2 ? '#B45309' : 'var(--color-text-secondary)' }}>
-                          #{index + 1}
-                        </span>
-                        <div style={{ display: 'flex', flexDirection: 'column' }}>
-                          <span style={{ color: 'var(--color-text-primary)', fontWeight: '500' }}>{userObj.name}</span>
-                          {(userObj.branch || userObj.sem) && (
-                            <span style={{ color: 'var(--color-text-secondary)', fontSize: '0.75rem' }}>
-                              {userObj.branch || ''} {userObj.branch && userObj.sem ? '•' : ''} {userObj.sem || ''}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              <div style={{ borderLeft: '3px solid #60A5FA', paddingLeft: '0.75rem' }}>
+                <h3 style={{ fontSize: '0.95rem', color: 'var(--color-text-primary)', margin: '0 0 0.25rem 0', fontWeight: 'bold' }}>⚽ How to Participate</h3>
+                <p style={{ margin: 0, color: 'var(--color-text-secondary)', fontSize: '0.825rem', lineHeight: '1.5' }}>
+                  Enter your predicted scores for any upcoming match and click <strong>Submit Prediction</strong> before kickoff.
+                </p>
+              </div>
 
-            {/* Rules Section */}
-            <div className="bento-card" style={{ padding: '1.5rem' }}>
-              <h2 style={{ fontSize: '1.2rem', marginBottom: '1rem', color: 'var(--color-text-primary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                📜 Rules & Info
-              </h2>
-              
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-                <div style={{ borderLeft: '3px solid #60A5FA', paddingLeft: '0.75rem' }}>
-                  <h3 style={{ fontSize: '0.95rem', color: 'var(--color-text-primary)', margin: '0 0 0.25rem 0', fontWeight: 'bold' }}>⚽ How to Participate</h3>
-                  <p style={{ margin: 0, color: 'var(--color-text-secondary)', fontSize: '0.825rem', lineHeight: '1.5' }}>
-                    Enter your predicted scores for any upcoming match and click <strong>Submit Prediction</strong> before kickoff.
-                  </p>
-                </div>
+              <div style={{ borderLeft: '3px solid #10B981', paddingLeft: '0.75rem' }}>
+                <h3 style={{ fontSize: '0.95rem', color: 'var(--color-text-primary)', margin: '0 0 0.25rem 0', fontWeight: 'bold' }}>🏆 Point Scoring System & Prize Split</h3>
+                <p style={{ margin: 0, color: 'var(--color-text-secondary)', fontSize: '0.825rem', lineHeight: '1.5' }}>
+                  Receive points for perfect predictions (correct scores & winner):
+                </p>
+                <ul style={{ margin: '0.25rem 0 0 1rem', padding: 0, color: 'var(--color-text-secondary)', fontSize: '0.825rem', lineHeight: '1.5' }}>
+                  <li>🔥 <strong>Normal Match</strong>: <code>+1 point</code></li>
+                  <li>⚡ <strong>Semi-Final</strong>: <code>+2 points</code></li>
+                  <li>👑 <strong>Final</strong>: <code>+4 points</code></li>
+                </ul>
+                <p style={{ margin: '0.5rem 0 0 0', color: 'var(--color-text-secondary)', fontSize: '0.825rem', lineHeight: '1.5' }}>
+                  🎁 <strong>Tie-Breaker Rule:</strong> If multiple players share the 1st rank:
+                </p>
+                <ul style={{ margin: '0.25rem 0 0 1rem', padding: 0, color: 'var(--color-text-secondary)', fontSize: '0.825rem', lineHeight: '1.5' }}>
+                  <li>• If a small number of players are tied, the prize pool will be shared equally.</li>
+                  <li>• If there are too many tied players, the winner will be decided by a lucky draw (lot).</li>
+                </ul>
+              </div>
 
-                <div style={{ borderLeft: '3px solid #10B981', paddingLeft: '0.75rem' }}>
-                  <h3 style={{ fontSize: '0.95rem', color: 'var(--color-text-primary)', margin: '0 0 0.25rem 0', fontWeight: 'bold' }}>🏆 Point Scoring System</h3>
-                  <p style={{ margin: 0, color: 'var(--color-text-secondary)', fontSize: '0.825rem', lineHeight: '1.5' }}>
-                    Receive points for perfect predictions (correct scores & winner):
-                  </p>
-                  <ul style={{ margin: '0.25rem 0 0 1rem', padding: 0, color: 'var(--color-text-secondary)', fontSize: '0.825rem', lineHeight: '1.5' }}>
-                    <li>🔥 <strong>Normal Match</strong>: <code>+1 point</code></li>
-                    <li>⚡ <strong>Semi-Final</strong>: <code>+2 points</code></li>
-                    <li>👑 <strong>Final</strong>: <code>+4 points</code></li>
-                  </ul>
-                </div>
+              <div style={{ borderLeft: '3px solid #F59E0B', paddingLeft: '0.75rem' }}>
+                <h3 style={{ fontSize: '0.95rem', color: 'var(--color-text-primary)', margin: '0 0 0.25rem 0', fontWeight: 'bold' }}>⏱️ Lockout Deadlines</h3>
+                <p style={{ margin: 0, color: 'var(--color-text-secondary)', fontSize: '0.825rem', lineHeight: '1.5' }}>
+                  Predictions lock instantly once a match starts. Late submissions are rejected by the database.
+                </p>
+              </div>
 
-                <div style={{ borderLeft: '3px solid #F59E0B', paddingLeft: '0.75rem' }}>
-                  <h3 style={{ fontSize: '0.95rem', color: 'var(--color-text-primary)', margin: '0 0 0.25rem 0', fontWeight: 'bold' }}>⏱️ Lockout Deadlines</h3>
-                  <p style={{ margin: 0, color: 'var(--color-text-secondary)', fontSize: '0.825rem', lineHeight: '1.5' }}>
-                    Predictions lock instantly once a match starts. Late submissions are rejected by the database.
-                  </p>
-                </div>
-
-                <div style={{ borderLeft: '3px solid #EF4444', paddingLeft: '0.75rem' }}>
-                  <h3 style={{ fontSize: '0.95rem', color: 'var(--color-text-primary)', margin: '0 0 0.25rem 0', fontWeight: 'bold' }}>🛡️ Verification & Fair Play</h3>
-                  <p style={{ margin: 0, color: 'var(--color-text-secondary)', fontSize: '0.825rem', lineHeight: '1.5' }}>
-                    Participants will be verified along with their branch and semester. Creation of multiple accounts is strictly prohibited.
-                  </p>
-                </div>
+              <div style={{ borderLeft: '3px solid #EF4444', paddingLeft: '0.75rem' }}>
+                <h3 style={{ fontSize: '0.95rem', color: 'var(--color-text-primary)', margin: '0 0 0.25rem 0', fontWeight: 'bold' }}>🛡️ Verification & Fair Play</h3>
+                <p style={{ margin: 0, color: 'var(--color-text-secondary)', fontSize: '0.825rem', lineHeight: '1.5' }}>
+                  Participants will be verified along with their branch and semester. Creation of multiple accounts is strictly prohibited.
+                </p>
               </div>
             </div>
-
           </div>
+
+          {/* Leaderboard Section */}
+          <div className="bento-card" style={{ padding: '1.5rem' }}>
+            <h2 style={{ fontSize: '1.25rem', marginBottom: '1rem', color: 'var(--color-text-primary)' }}>Leaderboard</h2>
+            {leaderboard.length === 0 ? <p style={{ color: 'var(--color-text-secondary)' }}>No points awarded yet.</p> : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                {(() => {
+                  let currentRank = 0;
+                  let lastPoints = -1;
+                  
+                  return leaderboard.map((userObj, index) => {
+                    if (userObj.points !== lastPoints) {
+                      currentRank++;
+                      lastPoints = userObj.points;
+                    }
+                    
+                    return (
+                      <div key={userObj.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '0.75rem 1rem', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', alignItems: 'center' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                          <span style={{ fontWeight: 'bold', color: currentRank === 1 ? '#F59E0B' : currentRank === 2 ? '#9CA3AF' : currentRank === 3 ? '#B45309' : 'var(--color-text-secondary)' }}>
+                            #{currentRank}
+                          </span>
+                          <div style={{ display: 'flex', flexDirection: 'column' }}>
+                            <span style={{ color: 'var(--color-text-primary)', fontWeight: '500' }}>{userObj.name}</span>
+                            {(userObj.branch || userObj.sem) && (
+                              <span style={{ color: 'var(--color-text-secondary)', fontSize: '0.75rem' }}>
+                                {userObj.branch || ''} {userObj.branch && userObj.sem ? '•' : ''} {userObj.sem || ''}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  });
+                })()}
+              </div>
+            )}
+          </div>
+
+
           <div style={{
             marginTop: '2rem',
             paddingTop: '1.5rem',
