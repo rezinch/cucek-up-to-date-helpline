@@ -765,7 +765,9 @@ function FifaAdminSection({ showToast }) {
       pSnap.forEach(d => {
         const p = d.data();
         if (p.predictedScoreA === actScoreA && p.predictedScoreB === actScoreB && p.predictedWinner === actWinner) {
-          correctUsers.push(p.userId);
+          if (!correctUsers.includes(p.userId)) {
+            correctUsers.push(p.userId);
+          }
         }
       });
 
@@ -800,20 +802,24 @@ function FifaAdminSection({ showToast }) {
       if (m.matchType === 'semi_final') pointsToWithdraw = 2;
       if (m.matchType === 'final') pointsToWithdraw = 4;
 
+      const withdrawnUsers = new Set();
       for (const d of pSnap.docs) {
         const p = d.data();
         
         // If the match was completed, check if this prediction was correct and withdraw points
         if (m.status === 'completed') {
           if (p.predictedScoreA === m.actualScoreA && p.predictedScoreB === m.actualScoreB && p.predictedWinner === m.actualWinner) {
-            const uq = query(collection(db, 'fifa_users'), where('uid', '==', p.userId));
-            const uSnap = await getDocs(uq);
-            if (!uSnap.empty) {
-              const userDoc = uSnap.docs[0];
-              const currentPoints = userDoc.data().points || 0;
-              await updateDoc(doc(db, 'fifa_users', userDoc.id), {
-                points: Math.max(0, currentPoints - pointsToWithdraw)
-              });
+            if (!withdrawnUsers.has(p.userId)) {
+              withdrawnUsers.add(p.userId);
+              const uq = query(collection(db, 'fifa_users'), where('uid', '==', p.userId));
+              const uSnap = await getDocs(uq);
+              if (!uSnap.empty) {
+                const userDoc = uSnap.docs[0];
+                const currentPoints = userDoc.data().points || 0;
+                await updateDoc(doc(db, 'fifa_users', userDoc.id), {
+                  points: Math.max(0, currentPoints - pointsToWithdraw)
+                });
+              }
             }
           }
         }

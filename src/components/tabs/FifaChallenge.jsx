@@ -18,6 +18,7 @@ export default function FifaChallenge() {
 
   const [matches, setMatches] = useState([]);
   const [predictions, setPredictions] = useState({});
+  const [submittingMatches, setSubmittingMatches] = useState({});
   const [leaderboard, setLeaderboard] = useState([]);
   const [loadingData, setLoadingData] = useState(false);
   const [toast, setToast] = useState(null);
@@ -166,6 +167,10 @@ export default function FifaChallenge() {
   };
 
   const submitPrediction = async (matchId, teamA, teamB) => {
+    if (predictions[matchId] || submittingMatches[matchId]) {
+      return;
+    }
+
     const match = matches.find(m => m.id === matchId);
     if (match) {
       const matchTime = (match.matchDate?.toDate ? match.matchDate.toDate() : new Date(match.matchDate)).getTime();
@@ -198,6 +203,8 @@ export default function FifaChallenge() {
       predictedWinner: winner
     });
 
+    setSubmittingMatches(prev => ({ ...prev, [matchId]: true }));
+
     try {
       await addDoc(collection(db, 'fifa_predictions'), {
         matchId,
@@ -211,6 +218,12 @@ export default function FifaChallenge() {
     } catch (err) {
       console.error("Prediction submission failed:", err);
       showToast('Error submitting prediction', 'error');
+    } finally {
+      setSubmittingMatches(prev => {
+        const copy = { ...prev };
+        delete copy[matchId];
+        return copy;
+      });
     }
   };
 
@@ -479,8 +492,17 @@ export default function FifaChallenge() {
                           <input type="number" id={`scoreB-${match.id}`} min="0" style={inputStyle} />
                         </div>
                         <div style={{ flex: '1 1 100%' }}>
-                          <button onClick={() => submitPrediction(match.id, match.teamA, match.teamB)} style={{...primaryBtnStyle, marginTop: '0.5rem'}}>
-                            Submit Prediction
+                          <button
+                            onClick={() => submitPrediction(match.id, match.teamA, match.teamB)}
+                            disabled={submittingMatches[match.id]}
+                            style={{
+                              ...primaryBtnStyle,
+                              marginTop: '0.5rem',
+                              opacity: submittingMatches[match.id] ? 0.6 : 1,
+                              cursor: submittingMatches[match.id] ? 'not-allowed' : 'pointer'
+                            }}
+                          >
+                            {submittingMatches[match.id] ? 'Submitting...' : 'Submit Prediction'}
                           </button>
                         </div>
                       </div>
@@ -514,7 +536,6 @@ export default function FifaChallenge() {
                           )}
                         </div>
                       </div>
-                      <span style={{ fontWeight: 'bold', color: '#60A5FA' }}>{userObj.points} pts</span>
                     </div>
                   ))}
                 </div>
